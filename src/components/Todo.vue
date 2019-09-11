@@ -1,14 +1,10 @@
 <template>
   <li class="todos__item" v-bind:class="{ 'marked-done':todo.done }">
     <div class="todos__item__content" @click="markDone(todo)">
-      <input type="checkbox" class="todos__item__content__done" />
-      <input
-        v-if="todo.editing"
-        ref="editing"
-        type="text"
-        class="todos__item__content__edit"
-        v-model="edit"
-      />
+      <input type="checkbox" class="todos__item__content__done" v-model="todo.done" />
+      <form class="edit-form" @submit.prevent="saveTodo(todo, edit)" v-if="todo.editing">
+        <input ref="editing" type="text" class="todos__item__content__edit" v-model="edit" />
+      </form>
       <span v-else class="todos__item__content__text">{{ todo.content }}</span>
     </div>
 
@@ -67,7 +63,7 @@ export default {
   align-items: center;
 
   margin-bottom: 0.5rem;
-  background: hsl(226, 30%, 90%);
+  background: hsl(226, 30%, 93%);
   border-radius: 5px;
   &__content {
     text-align: left;
@@ -79,15 +75,16 @@ export default {
       margin-right: 1rem;
       &::before {
         position: absolute;
-        top: -5px;
-        left: -5px;
         display: block;
+        top: -2px;
+        left: -2px;
         content: '';
-        width: 22px;
-        height: 22px;
+        width: 15px;
+        height: 15px;
         border: 2px solid slateblue;
         border-radius: 5px;
         background: hsl(226, 30%, 90%);
+        transition: background 200ms ease-out, border 200ms ease-out;
       }
     }
 
@@ -95,7 +92,11 @@ export default {
       line-height: 1.4em;
       font-weight: 600;
     }
-
+    .edit-form {
+      display: inline-block;
+      padding: 0;
+      margin: 0;
+    }
     &__edit {
       font-size: 1em;
       font-family: 'Proxima Nova';
@@ -123,6 +124,7 @@ export default {
     }
     .todos__item__content__done::before {
       background: slateblue;
+      border-color: hsl(228, 26%, 93%);
     }
   }
 }

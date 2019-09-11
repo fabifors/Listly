@@ -14,7 +14,7 @@ export default new Vuex.Store({
     ]
   },
   mutations: {
-    ADD_TODO(state, { content }) {
+    ADD_TODO(state, content) {
       state.todos.push({
         content,
         done: false,
@@ -61,7 +61,10 @@ export default new Vuex.Store({
       return state.todos
     },
     getDoneTodos: state => {
-      return state.todos.filter(todo => todo.done === true)
+      return state.todos.filter(todo => todo.done)
+    },
+    getUnDoneTodos: state => {
+      return state.todos.filter(todo => !todo.done)
     }
   }
 })

@@ -1,13 +1,9 @@
 <template>
   <div id="app">
-    <div class="input">
-      <form @submit.prevent="addTodo(newTodo)">
-        <label for="todo">Add a todo</label>
-        <input type="text" id="todo" v-model="newTodo.content" />
-        <button type="submit">Add todo</button>
-      </form>
+    <div class="layout-section">
+      <new-todo />
     </div>
-    <div class="todo-holder">
+    <div class="layout-section">
       <to-dos />
     </div>
   </div>
@@ -15,23 +11,13 @@
 
 <script>
 import Todos from './components/Todos.vue'
+import NewTodo from './components/NewTodo'
 
 export default {
   name: 'app',
   components: {
-    'to-dos': Todos
-  },
-  data: () => {
-    return {
-      newTodo: {
-        content: ''
-      }
-    }
-  },
-  methods: {
-    addTodo(todo) {
-      this.$store.dispatch('addTodo', todo)
-    }
+    'to-dos': Todos,
+    'new-todo': NewTodo
   }
 }
 </script>
@@ -41,19 +27,21 @@ export default {
   font-family: 'Proxima Nova', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 2rem;
 
   * {
     box-sizing: border-box;
   }
 }
 
-.todo-holder {
+.layout-section {
   max-width: 700px;
-  padding: 1.5rem;
+  padding: 0 1rem;
   margin-right: auto;
   margin-left: auto;
+  @media screen and (min-width: 500px) {
+    padding: 0 1.5rem;
+  }
 }
 </style>
