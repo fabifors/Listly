@@ -20,12 +20,14 @@
 <script>
 import { mapActions } from 'vuex'
 import { setTimeout } from 'timers'
+import { ElementMixin } from 'vue-slicksort'
 
 export default {
   name: 'Todo',
   props: {
     todo: Object
   },
+  mixins: [ElementMixin],
   data: () => {
     return {
       edit: ''
@@ -56,6 +58,7 @@ export default {
 
 <style lang="scss" scoped>
 .todos__item {
+  font-family: 'Proxima Nova';
   color: hsl(248, 61%, 15%);
 
   display: flex;
