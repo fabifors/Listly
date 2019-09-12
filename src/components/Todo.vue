@@ -16,9 +16,9 @@
         type="checkbox" 
         :class="`todos__item__content__done ${dragging ? 'no-transition': null}`"
       >
-      <form 
-        v-if="todo.editing" 
-        class="edit-form" 
+      <form
+        v-if="todo.editing"
+        class="edit-form"
         @submit.prevent="saveTodo(todo, edit)"
       >
         <input
