@@ -1,18 +1,29 @@
 <template>
   <div class="new-todo">
-    <h2 class="new-todo__heading">What should I do?</h2>
-    <form class="new-todo__form" @submit.prevent="addTodo(content)">
-      <label class="new-todo__form__label" for="todo">Add a todo</label>
+    <h2 class="new-todo__heading">
+      What should I do?
+    </h2>
+    <form
+      class="new-todo__form"
+      @submit.prevent="addTodo(content)"
+    >
+      <label
+        class="new-todo__form__label"
+        for="todo"
+      >Add a todo</label>
       <div class="input-container">
         <input
+          id="todo"
+          v-model="content"
           class="new-todo__form__input"
           type="text"
-          id="todo"
           placeholder="Add todo"
-          v-model="content"
-        />
-        <button class="new-todo__form__button" type="submit">
-          <i class="fas fa-paper-plane"></i>
+        >
+        <button
+          class="new-todo__form__button"
+          type="submit"
+        >
+          <i class="fas fa-paper-plane" />
         </button>
       </div>
     </form>
@@ -21,7 +32,7 @@
 
 <script>
 export default {
-  name: 'New Todo',
+  name: 'NewTodo',
   data: () => {
     return {
       content: ''

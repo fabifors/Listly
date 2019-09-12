@@ -1,61 +1,124 @@
 <template>
-  <li class="todos__item" v-bind:class="{ 'marked-done':todo.done }">
-    <div class="todos__item__content" @click="markDone(todo)">
-      <input type="checkbox" class="todos__item__content__done" v-model="todo.done" />
-      <form class="edit-form" @submit.prevent="saveTodo(todo, edit)" v-if="todo.editing">
-        <input ref="editing" type="text" class="todos__item__content__edit" v-model="edit" />
+  <li
+    class="todos__item"
+    :class="{ 'marked-done':todo.done}"
+  >
+    <div
+      class="todos__item__content"
+      @click="markDone(todo)"
+    >
+      <i
+        v-handle
+        class="handle fas fa-grip-vertical"
+      />
+      <input 
+        v-model="todo.done" 
+        type="checkbox" 
+        :class="`todos__item__content__done ${dragging ? 'no-transition': null}`"
+      >
+      <form
+        v-if="todo.editing"
+        class="edit-form"
+        @submit.prevent="saveTodo(todo, edit)"
+      >
+        <input
+          ref="editing"
+          v-model="edit"
+          type="text"
+          class="todos__item__content__edit"
+        >
       </form>
-      <span v-else class="todos__item__content__text">{{ todo.content }}</span>
+      <span
+        v-else
+        class="todos__item__content__text"
+      >{{ todo.content }}</span>
     </div>
 
     <div class="todos__item__actions">
-      <i v-if="todo.editing" class="fas fa-save" @click="saveTodo(todo, edit)"></i>
-      <i v-else class="fas fa-edit" @click="editTodo(todo)"></i>
+      <i
+        v-if="todo.editing"
+        class="fas fa-save"
+        @click="saveTodo(todo, edit)"
+      />
+      <i
+        v-else
+        class="fas fa-edit"
+        @click="editTodo(todo)"
+      />
 
-      <i class="fas fa-times" @click="remove(todo)"></i>
+      <i
+        class="fas fa-times"
+        @click="remove(todo)"
+      />
     </div>
   </li>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { setTimeout } from 'timers'
+import { mapActions } from "vuex";
+import { setTimeout } from "timers";
+import { ElementMixin, HandleDirective } from "vue-slicksort";
 
 export default {
-  name: 'Todo',
+  name: "Todo",
+  directives: {
+    handle: HandleDirective
+  },
+  mixins: [ ElementMixin ],
   props: {
-    todo: Object
+    todo: {
+      type: Object,
+      default: () => {
+        return {};
+      }
+    },
+    dragging: {
+      type: Boolean,
+      default: false
+    }
   },
   data: () => {
     return {
-      edit: ''
-    }
+      edit: ""
+    };
   },
   methods: {
     ...mapActions({
-      remove: 'removeTodo'
+      remove: "removeTodo"
     }),
     editTodo(todo) {
-      this.$store.dispatch('editTodo', todo)
-      this.edit = todo.content
+      this.$store.dispatch("editTodo", todo);
+      this.edit = todo.content;
       setTimeout(() => {
-        this.$refs.editing.focus()
-      }, 25)
+        this.$refs.editing.focus();
+      }, 25);
     },
     saveTodo(todo, edit) {
-      this.$store.dispatch('saveTodo', { todo, update: edit })
+      this.$store.dispatch("saveTodo", { todo, update: edit });
     },
     markDone(todo) {
       if (!todo.editing) {
-        this.$store.dispatch('markDone', todo)
+        this.$store.dispatch("markDone", todo);
       }
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
+.no-transition::before {
+  transition: none !important;
+}
+
+.handle {
+  color: slateblue;
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  margin-right: 0.75rem;
+}
+
 .todos__item {
+  font-family: "Proxima Nova";
   color: hsl(248, 61%, 15%);
 
   display: flex;
@@ -78,7 +141,7 @@ export default {
         display: block;
         top: -2px;
         left: -2px;
-        content: '';
+        content: "";
         width: 15px;
         height: 15px;
         border: 2px solid slateblue;
@@ -99,7 +162,7 @@ export default {
     }
     &__edit {
       font-size: 1em;
-      font-family: 'Proxima Nova';
+      font-family: "Proxima Nova";
       font-weight: 600;
       line-height: 1.4em;
       border: none;
