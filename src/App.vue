@@ -18,6 +18,9 @@ export default {
   components: {
     'to-dos': Todos,
     'new-todo': NewTodo
+  },
+  mounted () {
+    this.$store.dispatch('init')
   }
 }
 </script>

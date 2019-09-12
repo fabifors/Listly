@@ -38,28 +38,42 @@ export default new Vuex.Store({
       const index = state.todos.indexOf(todo)
       state.todos[index].done = !state.todos[index].done
     },
-    REORDER (state, todos) {
+    REPLACE_TODOS (state, todos) {
       state.todos = [...todos]
     }
   },
   actions: {
-    addTodo ({ commit }, todo) {
+    init ({commit}, todos) {
+      if(localStorage.todos) {
+        commit('REPLACE_TODOS', JSON.parse(localStorage.todos)) 
+      }
+    },
+    updateStorage () {
+      localStorage.todos = JSON.stringify(this.getters.getTodos)
+    },
+    addTodo ({ commit, dispatch }, todo) {
       commit('ADD_TODO', todo)
+      dispatch('updateStorage')
     },
-    removeTodo ({ commit }, todo) {
+    removeTodo ({ commit, dispatch }, todo) {
       commit('REMOVE_TODO', todo)
+      dispatch('updateStorage')
     },
-    editTodo ({ commit }, todo) {
+    editTodo ({ commit, dispatch }, todo) {
       commit('EDIT_TODO', todo)
+      dispatch('updateStorage')
     },
-    saveTodo ({ commit }, todo) {
+    saveTodo ({ commit, dispatch }, todo) {
       commit('SAVE_TODO', todo)
+      dispatch('updateStorage')
     },
-    markDone ({ commit }, todo) {
+    markDone ({ commit, dispatch }, todo) {
       commit('MARK_DONE', todo)
+      dispatch('updateStorage')
     },
-    reorderTodos ({ commit }, todos) {
-      commit('REORDER', todos)
+    reorderTodos ({ commit, dispatch }, todos) {
+      commit('REPLACE_TODOS', todos)
+      dispatch('updateStorage')
     }
   },
   getters: {

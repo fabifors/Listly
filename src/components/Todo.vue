@@ -118,6 +118,8 @@ export default {
 }
 
 .todos__item {
+  clip-path: inset-rectangle(0%, 0%, 0%, 10%);
+
   font-family: "Proxima Nova";
   color: hsl(248, 61%, 15%);
 
