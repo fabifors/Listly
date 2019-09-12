@@ -7,7 +7,7 @@ export default new Vuex.Store({
   state: {
     todos: [
       {
-        content: '1st todo',
+        content: 'Example todo',
         done: false,
         editing: false
       }
