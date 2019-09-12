@@ -2,13 +2,13 @@
   <div class="wrapper">
     <sorted-list
       v-model="sortedTodos"
-      :useDragHandle="true"
+      :use-drag-handle="true"
       @sort-start="dragStart()"
       @input="dragEnd($event)"
     >
       <to-do
-        v-show="todos"
         v-for="(todo, index) in todos"
+        v-show="todos"
         :key="index"
         :index="index"
         :todo="todo"

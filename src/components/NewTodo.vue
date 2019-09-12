@@ -40,8 +40,8 @@ export default {
   },
   methods: {
     addTodo(todo) {
-      this.$store.dispatch('addTodo', todo)
-      this.content = ''
+      this.$store.dispatch('addTodo', todo);
+      this.content = '';
     }
   }
 }

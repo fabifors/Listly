@@ -1,22 +1,55 @@
 <template>
-  <li class="todos__item" :class="{ 'marked-done':todo.done}">
-    <div class="todos__item__content" @click="markDone(todo)">
-      <i v-handle class="handle fas fa-grip-vertical"></i>
+  <li
+    class="todos__item"
+    :class="{ 'marked-done':todo.done}"
+  >
+    <div
+      class="todos__item__content"
+      @click="markDone(todo)"
+    >
+      <i
+        v-handle
+        class="handle fas fa-grip-vertical"
+      />
       <input 
         v-model="todo.done" 
         type="checkbox" 
-        :class="`todos__item__content__done ${dragging ? 'no-transition': null}`" />
-      <form v-if="todo.editing" class="edit-form" @submit.prevent="saveTodo(todo, edit)">
-        <input ref="editing" v-model="edit" type="text" class="todos__item__content__edit" />
+        :class="`todos__item__content__done ${dragging ? 'no-transition': null}`"
+      >
+      <form 
+        v-if="todo.editing" 
+        class="edit-form" 
+        @submit.prevent="saveTodo(todo, edit)"
+      >
+        <input
+          ref="editing"
+          v-model="edit"
+          type="text"
+          class="todos__item__content__edit"
+        >
       </form>
-      <span v-else class="todos__item__content__text">{{ todo.content }}</span>
+      <span
+        v-else
+        class="todos__item__content__text"
+      >{{ todo.content }}</span>
     </div>
 
     <div class="todos__item__actions">
-      <i v-if="todo.editing" class="fas fa-save" @click="saveTodo(todo, edit)" />
-      <i v-else class="fas fa-edit" @click="editTodo(todo)" />
+      <i
+        v-if="todo.editing"
+        class="fas fa-save"
+        @click="saveTodo(todo, edit)"
+      />
+      <i
+        v-else
+        class="fas fa-edit"
+        @click="editTodo(todo)"
+      />
 
-      <i class="fas fa-times" @click="remove(todo)" />
+      <i
+        class="fas fa-times"
+        @click="remove(todo)"
+      />
     </div>
   </li>
 </template>
@@ -28,6 +61,10 @@ import { ElementMixin, HandleDirective } from "vue-slicksort";
 
 export default {
   name: "Todo",
+  directives: {
+    handle: HandleDirective
+  },
+  mixins: [ ElementMixin ],
   props: {
     todo: {
       type: Object,
@@ -45,10 +82,6 @@ export default {
       edit: ""
     };
   },
-  directives: {
-    handle: HandleDirective
-  },
-  mixins: [ ElementMixin ],
   methods: {
     ...mapActions({
       remove: "removeTodo"
@@ -85,6 +118,8 @@ export default {
 }
 
 .todos__item {
+  clip-path: inset-rectangle(0%, 0%, 0%, 10%);
+
   font-family: "Proxima Nova";
   color: hsl(248, 61%, 15%);
 
