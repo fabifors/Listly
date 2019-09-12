@@ -14,7 +14,7 @@ import Todos from './components/Todos.vue'
 import NewTodo from './components/NewTodo'
 
 export default {
-  name: 'app',
+  name: 'TodoApp',
   components: {
     'to-dos': Todos,
     'new-todo': NewTodo

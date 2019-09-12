@@ -1,17 +1,18 @@
 <template>
   <div class="wrapper">
     <sorted-list
-      :pressDelay="200"
       v-model="sortedTodos"
+      :useDragHandle="true"
       @sort-start="dragStart()"
       @input="dragEnd($event)"
     >
       <to-do
         v-show="todos"
         v-for="(todo, index) in todos"
-        :index="index"
         :key="index"
+        :index="index"
         :todo="todo"
+        :dragging="dragging"
       />
     </sorted-list>
   </div>
@@ -21,20 +22,19 @@
 import Todo from './Todo'
 import { mapGetters, mapState } from 'vuex'
 import SortedList from './SortedList'
+import { setTimeout } from 'timers';
 
 export default {
   name: 'Todos',
-  props: {
-    data: Array
-  },
-  data: () => {
-    return {
-      sortedTodos: []
-    }
-  },
   components: {
     'sorted-list': SortedList,
     'to-do': Todo
+  },
+  data: () => {
+    return {
+      sortedTodos: [],
+      dragging: false
+    }
   },
   computed: {
     ...mapGetters({
@@ -43,10 +43,14 @@ export default {
   },
   methods: {
     dragStart() {
+      this.dragging = true
       this.sortedTodos = Array.from(this.todos)
     },
     dragEnd(list) {
       this.$store.dispatch('reorderTodos', list)
+      setTimeout(() => {
+        this.dragging = false
+      }, 0)
     }
   }
 }
@@ -59,6 +63,9 @@ export default {
   .todos {
     padding: 0;
     list-style: none;
+    
   }
 }
+
+
 </style>
