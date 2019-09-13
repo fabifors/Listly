@@ -113,8 +113,8 @@ export default {
 .handle {
   color: slateblue;
   display: inline-block;
-  padding: 0.15rem 0.5rem;
-  margin-right: 0.75rem;
+  padding: 0.15em 0.4em;
+  margin-right: 0.4rem;
 }
 
 .todos__item {
