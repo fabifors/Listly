@@ -10,7 +10,7 @@
       />
       <div :class="`info-container__inner ${state.hover ? 'hover-active': null}`">
         <h3>About this project</h3>
-        <p>This project was created by <a href="https://github.com/fabifors">fabifors</a> and here is <a href="https://github.com/fabifors/vue-todo">the link for the public repo</a></p>
+        <p>This project was created by <a href="https://github.com/fabifors" target="_blank">fabifors</a> and here is <a href="https://github.com/fabifors/vue-todo" target="_blank">the link for the public repo</a></p>
       </div>
     </div>
   </footer>
@@ -80,7 +80,7 @@ export default {
         display: block;
         width: calc(100% - 5px);
         height: 10px;
-        margin-left: 2%;
+        margin-left: 7px;
         margin-top: -7px;
         border-radius: 5px;
         background: rgba(255, 255, 255, 0.2);
@@ -92,7 +92,7 @@ export default {
         padding-right: 0.5rem;
         color: rgb(145, 240, 216);
         &::after {
-          transform: translateX(-12px) translateY(-12px) scaleY(1.5);
+          transform: translateX(-17px) translateY(-12px);
           padding: 5px;
         }
       }
