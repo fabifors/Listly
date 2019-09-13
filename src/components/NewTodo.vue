@@ -36,38 +36,43 @@ export default {
   data: () => {
     return {
       content: ''
-    }
+    };
   },
   methods: {
     addTodo(todo) {
       if(!this.content) {
-        return
+        return;
       }
       this.$store.dispatch('addTodo', todo);
       this.content = '';
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
 .new-todo {
   color: hsl(248, 61%, 15%);
   padding: 1rem;
+
   &__heading {
     font-size: 3em;
     color: hsl(248, 61%, 25%);
   }
+
   &__form {
     display: flex;
     flex-direction: row;
+
     &__label {
       display: none;
     }
+
     .input-container {
       position: relative;
       width: 100%;
     }
+
     &__input {
       display: block;
       width: 100%;
@@ -78,6 +83,7 @@ export default {
       border-color: hsl(226, 30%, 85%);
       border-radius: 5px;
     }
+
     &__button {
       position: absolute;
       right: 0.5rem;

@@ -1,7 +1,7 @@
 <template>
   <li
     class="todos__item"
-    :class="{ 'marked-done':todo.done}"
+    :class="{ 'marked-done':todo.done }"
   >
     <div
       class="todos__item__content"
@@ -55,16 +55,19 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
-import { setTimeout } from "timers";
-import { ElementMixin, HandleDirective } from "vue-slicksort";
+import { mapActions } from 'vuex';
+import { setTimeout } from 'timers';
+import { ElementMixin, HandleDirective } from 'vue-slicksort';
 
 export default {
-  name: "Todo",
+  name: 'Todo',
+
   directives: {
     handle: HandleDirective
   },
+
   mixins: [ ElementMixin ],
+
   props: {
     todo: {
       type: Object,
@@ -77,28 +80,34 @@ export default {
       default: false
     }
   },
+
   data: () => {
     return {
-      edit: ""
+      edit: ''
     };
   },
+
   methods: {
+
     ...mapActions({
-      remove: "removeTodo"
+      remove: 'removeTodo'
     }),
+
     editTodo(todo) {
-      this.$store.dispatch("editTodo", todo);
+      this.$store.dispatch('editTodo', todo);
       this.edit = todo.content;
       setTimeout(() => {
         this.$refs.editing.focus();
       }, 25);
     },
+
     saveTodo(todo, edit) {
-      this.$store.dispatch("saveTodo", { todo, update: edit });
+      this.$store.dispatch('saveTodo', { todo, update: edit });
     },
+
     markDone(todo) {
       if (!todo.editing) {
-        this.$store.dispatch("markDone", todo);
+        this.$store.dispatch('markDone', todo);
       }
     }
   }
@@ -119,7 +128,7 @@ export default {
 
 .todos__item {
   clip-path: inset-rectangle(0%, 0%, 0%, 10%);
-
+  
   font-family: "Proxima Nova";
   color: hsl(248, 61%, 15%);
 
@@ -127,17 +136,20 @@ export default {
   flex-direction: row;
   align-items: center;
 
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   background: hsl(226, 30%, 93%);
   border-radius: 5px;
+  
   &__content {
     text-align: left;
     flex-grow: 1;
     padding: 0.75rem;
+
     &__done {
       position: relative;
       padding: 0.5rem;
       margin-right: 1rem;
+
       &::before {
         position: absolute;
         display: block;
@@ -157,11 +169,13 @@ export default {
       line-height: 1.4em;
       font-weight: 600;
     }
+
     .edit-form {
       display: inline-block;
       padding: 0;
       margin: 0;
     }
+
     &__edit {
       font-size: 1em;
       font-family: "Proxima Nova";
@@ -187,6 +201,7 @@ export default {
       color: rgb(107, 100, 153);
       text-decoration: line-through;
     }
+
     .todos__item__content__done::before {
       background: slateblue;
       border-color: hsl(228, 26%, 93%);

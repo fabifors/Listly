@@ -19,9 +19,9 @@
 </template>
 
 <script>
-import Todo from './Todo'
-import { mapGetters, mapState } from 'vuex'
-import SortedList from './SortedList'
+import Todo from './Todo';
+import { mapGetters, mapState } from 'vuex';
+import SortedList from './SortedList';
 import { setTimeout } from 'timers';
 
 export default {
@@ -34,7 +34,7 @@ export default {
     return {
       sortedTodos: [],
       dragging: false
-    }
+    };
   },
   computed: {
     ...mapGetters({
@@ -43,17 +43,17 @@ export default {
   },
   methods: {
     dragStart() {
-      this.dragging = true
-      this.sortedTodos = Array.from(this.todos)
+      this.dragging = true;
+      this.sortedTodos = Array.from(this.todos);
     },
     dragEnd(list) {
-      this.$store.dispatch('reorderTodos', list)
+      this.$store.dispatch('reorderTodos', list);
       setTimeout(() => {
-        this.dragging = false
-      }, 0)
+        this.dragging = false;
+      }, 0);
     }
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

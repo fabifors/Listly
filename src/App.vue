@@ -1,19 +1,21 @@
 <template>
-  <div id="app">
-    <div class="layout-section">
-      <new-todo />
+  <div class="wrapper">
+    <div id="app">
+      <div class="layout-section">
+        <new-todo />
+      </div>
+      <div class="layout-section">
+        <to-dos />
+      </div>
+      <footer-section />
     </div>
-    <div class="layout-section">
-      <to-dos />
-    </div>
-    <footer-section />
   </div>
 </template>
 
 <script>
-import Todos from './components/Todos.vue'
-import NewTodo from './components/NewTodo'
-import Footer from './components/Footer'
+import Todos from './components/Todos.vue';
+import NewTodo from './components/NewTodo';
+import Footer from './components/Footer';
 
 export default {
   name: 'TodoApp',
@@ -23,9 +25,9 @@ export default {
     'new-todo': NewTodo
   },
   mounted () {
-    this.$store.dispatch('init')
+    this.$store.dispatch('init');
   }
-}
+};
 </script>
 
 <style lang="scss">
@@ -42,6 +44,14 @@ body { margin: 0;}
   color: #2c3e50;
   padding-top: 2rem;
   min-height: 100vh;
+  padding-bottom: 10rem;
+}
+
+.wrapper {
+
+  max-width: 700px;
+  margin: 0 auto;
+  position: relative;
 }
 
 .layout-section {
@@ -49,6 +59,7 @@ body { margin: 0;}
   padding: 0 0.5rem;
   margin-right: auto;
   margin-left: auto;
+
   @media screen and (min-width: 500px) {
     padding: 0 1.5rem;
   }

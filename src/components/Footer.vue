@@ -10,7 +10,21 @@
       />
       <div :class="`info-container__inner ${state.hover ? 'hover-active': null}`">
         <h3>About this project</h3>
-        <p>This project was created by <a href="https://github.com/fabifors" target="_blank">fabifors</a> and here is <a href="https://github.com/fabifors/vue-todo" target="_blank">the link for the public repo</a></p>
+        <p>
+          This project was created by 
+          <a 
+            href="https://github.com/fabifors" 
+            target="_blank"
+          >
+            fabifors
+          </a> and here is 
+          <a 
+            href="https://github.com/fabifors/vue-todo" 
+            target="_blank"
+          >
+            the link for the public repo
+          </a>
+        </p>
       </div>
     </div>
   </footer>
@@ -24,23 +38,26 @@ export default {
       state: {
         hover: false
       }
-    }
+    };
   },
   methods: {
     hoverStart() {
-      this.state.hover = true
+      this.state.hover = true;
     },
     hoverEnd() {
-      this.state.hover = false
+      this.state.hover = false;
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
 .footer {
   color: slateblue;
   width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
 }
 
 .info-container {
@@ -61,7 +78,7 @@ export default {
     border-radius: 5px;
     color: #fff;
     padding: 1em 1.25em;
-    background: slateblue;
+    background-image: linear-gradient(to right bottom, rgb(138, 124, 231), rgb(86, 71, 184));
     clip-path: circle(0% at 97% 87%);
     transition: clip-path 0.5s;
     height: 100%;
@@ -71,7 +88,7 @@ export default {
       font-weight: 600;
       display: inline-block;
       text-decoration: none;
-      transition: padding 300ms, color 300ms ease-in 200ms;
+      transition: padding 300ms, color 200ms ease-in 200ms;
       position:relative;
 
       &::after {
@@ -84,13 +101,14 @@ export default {
         margin-top: -7px;
         border-radius: 5px;
         background: rgba(255, 255, 255, 0.2);
-        transition: transform 300ms, padding 200ms;
+        transition: transform 300ms, padding 200ms ease 200ms;
       }
 
       &:hover {
         padding-left: 0.5rem;
         padding-right: 0.5rem;
-        color: rgb(145, 240, 216);
+        color: rgb(138, 231, 129);
+        
         &::after {
           transform: translateX(-17px) translateY(-12px);
           padding: 5px;

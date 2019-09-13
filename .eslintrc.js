@@ -12,15 +12,17 @@ module.exports = {
       {
         singleline: 1,
         multiline: {
-          max: 1,
+          max: 3,
           allowFirstLine: false
         }
       }
-    ]
+    ],
+    'quotes': [2, 'single', { 'avoidEscape': true }],
+    'semi': ['error', 'always']
   },
   parser: 'vue-eslint-parser',
   parserOptions: {
     parser: 'babel-eslint',
     sourceType: 'module'
   }
-}
+};
