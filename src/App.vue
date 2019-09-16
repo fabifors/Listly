@@ -7,7 +7,7 @@
       <div class="layout-section">
         <to-dos />
       </div>
-      <footer-section />
+      <repo-information />
     </div>
   </div>
 </template>
@@ -15,12 +15,12 @@
 <script>
 import Todos from './components/Todos.vue';
 import NewTodo from './components/NewTodo';
-import Footer from './components/Footer';
+import RepoInformation from './components/RepoInformation';
 
 export default {
   name: 'TodoApp',
   components: {
-    'footer-section': Footer,
+    'repo-information': RepoInformation,
     'to-dos': Todos,
     'new-todo': NewTodo
   },

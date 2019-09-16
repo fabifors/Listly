@@ -1,5 +1,4 @@
 <template>
-  <footer class="footer layout-section">
     <div 
       class="info-container"  
       @mouseleave="hoverEnd()"
@@ -27,12 +26,11 @@
         </p>
       </div>
     </div>
-  </footer>
 </template>
 
 <script>
 export default {
-  name: 'Footer',
+  name: 'RepoInformation',
   data: () => {
     return {
       state: {
@@ -52,13 +50,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.footer {
-  color: slateblue;
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-}
 
 .info-container {
   width: 100%;

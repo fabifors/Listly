@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <sorted-list
-      v-model="todos"
+      v-model="sortedTodos"
       :use-drag-handle="true"
       :class="{'dragging': dragging}"
       @sort-start="dragStart()"
