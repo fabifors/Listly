@@ -18,6 +18,7 @@
           class="new-todo__form__input"
           type="text"
           placeholder="Add todo"
+          autocomplete="off" 
         >
         <button
           class="new-todo__form__button"
