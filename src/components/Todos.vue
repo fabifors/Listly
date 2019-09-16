@@ -6,6 +6,7 @@
       @sort-start="dragStart()"
       @input="dragEnd($event)"
     >
+    <transition-group name="transition" tag="div">
       <to-do
         v-for="(todo, index) in todos"
         v-show="todos"
@@ -14,6 +15,7 @@
         :todo="todo"
         :dragging="dragging"
       />
+      </transition-group>
     </sorted-list>
   </div>
 </template>
