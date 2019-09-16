@@ -1,7 +1,7 @@
 <template>
-  <ul class="todos">
+  <div class="todos">
     <slot />
-  </ul>
+  </div>
 </template>
 
 <script>
@@ -11,3 +11,10 @@ export default {
   mixins: [ContainerMixin]
 };
 </script>
+
+<style lang="scss">
+.todos ul {
+  padding: 0;
+  list-style: none;
+}
+</style>

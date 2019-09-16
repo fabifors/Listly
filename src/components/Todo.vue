@@ -26,6 +26,7 @@
           v-model="edit"
           type="text"
           class="todos__item__content__edit"
+          autocomplete="off" 
         >
       </form>
       <span

@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
+import { hash } from './functions';
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -9,16 +11,18 @@ export default new Vuex.Store({
       {
         content: 'Example todo',
         done: false,
-        editing: false
+        editing: false,
+        id: hash()
       }
     ]
   },
   mutations: {
     ADD_TODO (state, content) {
-      state.todos.push({
+      state.todos.unshift({
         content,
         done: false,
-        editing: false
+        editing: false,
+        id: hash()
       });
     },
     REMOVE_TODO (state, todo) {
@@ -48,29 +52,36 @@ export default new Vuex.Store({
         commit('REPLACE_TODOS', JSON.parse(localStorage.todos)); 
       }
     },
+
     updateStorage () {
       localStorage.todos = JSON.stringify(this.getters.getTodos);
     },
+
     addTodo ({ commit, dispatch }, todo) {
       commit('ADD_TODO', todo);
       dispatch('updateStorage');
     },
+
     removeTodo ({ commit, dispatch }, todo) {
       commit('REMOVE_TODO', todo);
       dispatch('updateStorage');
     },
+
     editTodo ({ commit, dispatch }, todo) {
       commit('EDIT_TODO', todo);
       dispatch('updateStorage');
     },
+
     saveTodo ({ commit, dispatch }, todo) {
       commit('SAVE_TODO', todo);
       dispatch('updateStorage');
     },
+
     markDone ({ commit, dispatch }, todo) {
       commit('MARK_DONE', todo);
       dispatch('updateStorage');
     },
+
     reorderTodos ({ commit, dispatch }, todos) {
       commit('REPLACE_TODOS', todos);
       dispatch('updateStorage');

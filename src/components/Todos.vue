@@ -1,20 +1,25 @@
 <template>
   <div class="wrapper">
     <sorted-list
-      v-model="sortedTodos"
+      v-model="todos"
       :use-drag-handle="true"
+      :class="{'dragging': dragging}"
       @sort-start="dragStart()"
-      @input="dragEnd($event)"
+      @sort-end="sortEnd()"
+      @input="reorder($event)"
     >
-    <transition-group name="transition" tag="div">
-      <to-do
-        v-for="(todo, index) in todos"
-        v-show="todos"
-        :key="index"
-        :index="index"
-        :todo="todo"
-        :dragging="dragging"
-      />
+      <transition-group 
+        name="animation" 
+        tag="ul"
+      >
+        <to-do
+          v-for="(todo, index) in todos"
+          v-show="todos"
+          :key="todo.id"
+          :index="index"
+          :todo="todo"
+          :dragging="dragging"
+        />
       </transition-group>
     </sorted-list>
   </div>
@@ -45,29 +50,60 @@ export default {
   },
   methods: {
     dragStart() {
-      this.dragging = true;
       this.sortedTodos = Array.from(this.todos);
     },
-    dragEnd(list) {
+    sortEnd() {
+      this.dragging = true;
+    },
+    reorder(list) {
       this.$store.dispatch('reorderTodos', list);
       setTimeout(() => {
         this.dragging = false;
-      }, 0);
+      }, 10);
     }
   }
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+
 .wrapper {
   padding: 1rem;
-  .todos {
-    padding: 0;
-    list-style: none;
-    
-  }
 }
 
+.dragging .animation-move {
+  transition: none;
+}
+
+.animation {
+  position: relative;
+}
+
+.animation-enter{
+  opacity: 0;
+  transform: scale(0.4, 0.4);
+  z-index: -1;
+}
+
+.animation-leave-to {
+  z-index: -1;
+  transform: scale(0.8) translateX(20px);
+  opacity: 0;
+}
+
+.animation-enter-active {
+  transition: 0.35s all;
+  opacity: 1;
+}
+
+.animation-leave-active {
+  transition: all 0.35s;
+  position: absolute;
+  width: 100%;
+}
+
+.animation-move {
+  transition: transform 0.5s;
+}
 
 </style>
