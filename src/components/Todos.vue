@@ -79,7 +79,7 @@ export default {
   position: relative;
 }
 
-.animation-enter{
+.animation-enter {
   opacity: 0;
   transform: scale(0.4, 0.4);
   z-index: -1;
@@ -87,7 +87,7 @@ export default {
 
 .animation-leave-to {
   z-index: -1;
-  transform: scale(0.8) translateX(20px);
+  transform: scale(0.4, 0.4);
   opacity: 0;
 }
 
