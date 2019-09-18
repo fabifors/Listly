@@ -1,3 +1,4 @@
+![Cool preview image](img/preview.png)
 
 # Wohoo another todo app!
 
