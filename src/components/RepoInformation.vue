@@ -1,31 +1,31 @@
 <template>
-    <div 
-      class="info-container"  
-      @mouseleave="hoverEnd()"
-    >
-      <i 
-        class="info-container__icon far fa-info-circle" 
-        @mouseover="hoverStart()" 
-      />
-      <div :class="`info-container__inner ${state.hover ? 'hover-active': null}`">
-        <h3>About this project</h3>
-        <p>
-          This project was created by 
-          <a 
-            href="https://github.com/fabifors" 
-            target="_blank"
-          >
-            fabifors
-          </a> and here is 
-          <a 
-            href="https://github.com/fabifors/vue-todo" 
-            target="_blank"
-          >
-            the link for the public repo
-          </a>
-        </p>
-      </div>
+  <div 
+    class="info-container"  
+    @mouseleave="hoverEnd()"
+  >
+    <i 
+      class="info-container__icon far fa-info-circle" 
+      @mouseover="hoverStart()" 
+    />
+    <div :class="`info-container__inner ${state.hover ? 'hover-active': null}`">
+      <h3>About this project</h3>
+      <p>
+        This project was created by 
+        <a 
+          href="https://github.com/fabifors" 
+          target="_blank"
+        >
+          fabifors
+        </a> and here is 
+        <a 
+          href="https://github.com/fabifors/vue-todo" 
+          target="_blank"
+        >
+          the link for the public repo
+        </a>
+      </p>
     </div>
+  </div>
 </template>
 
 <script>

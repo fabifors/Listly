@@ -82,13 +82,11 @@ export default {
 .animation-enter {
   opacity: 0;
   transform: scale(0.4, 0.4);
-  z-index: -1;
 }
 
 .animation-leave-to {
-  z-index: -1;
-  transform: scale(0.4, 0.4);
   opacity: 0;
+  transform: scale(0.4, 0.4);
 }
 
 .animation-enter-active {

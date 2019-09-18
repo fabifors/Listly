@@ -1,28 +1,19 @@
 <template>
-  <div class="wrapper">
-    <div id="app">
-      <div class="layout-section">
-        <new-todo />
-      </div>
-      <div class="layout-section">
-        <to-dos />
-      </div>
-      <repo-information />
+  <div id="app">
+    <div class="main-wrapper">
+      <nav-bar />
+      <router-view />
     </div>
   </div>
 </template>
 
 <script>
-import Todos from './components/Todos.vue';
-import NewTodo from './components/NewTodo';
-import RepoInformation from './components/RepoInformation';
+import Navbar from './components/Navbar';
 
 export default {
   name: 'TodoApp',
   components: {
-    'repo-information': RepoInformation,
-    'to-dos': Todos,
-    'new-todo': NewTodo
+    'nav-bar': Navbar
   },
   mounted () {
     this.$store.dispatch('init');
@@ -42,14 +33,12 @@ body { margin: 0;}
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-  padding-top: 2rem;
   min-height: 100vh;
-  padding-bottom: 10rem;
+  padding-bottom: 5rem;
 }
 
-.wrapper {
-
-  max-width: 700px;
+.main-wrapper {
+  max-width: 750px;
   margin: 0 auto;
   position: relative;
 }
