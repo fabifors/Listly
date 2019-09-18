@@ -1,6 +1,6 @@
 ![Cool preview image](img/preview.png)
 
-
+<hr>
 
 # Wohoo another todo app!
 
