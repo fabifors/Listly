@@ -89,10 +89,9 @@ export default {
   },
 
   methods: {
-
-    ...mapActions({
-      remove: 'removeTodo'
-    }),
+    remove(todo) {
+      this.$store.dispatch('removeTodo', todo);
+    },
 
     editTodo(todo) {
       this.$store.dispatch('editTodo', todo);
