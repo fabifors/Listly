@@ -7,35 +7,46 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    currentList: '',
-    todos: [
-      {
-        content: 'Example todo',
-        done: false,
-        editing: false,
-        id: hash()
-      }
-    ],
-    lists : [
-      {
-        id: hash(),
+    currentList: 'as2-asd2-asd3-k2-asd2',
+    lists : {
+      'as2-asd2-asd3-k2-asd2': {
+        id: 'as2-asd2-asd3-k2-asd2',
         title: 'My list',
-        todos: [ 
+        todos: [
           {
-          content: 'Example todo 2',
-          done: false,
-          editing: false,
-          id: hash()
+            content: 'Example todo 1',
+            done: false,
+            editing: false,
+            id: hash()
+          }, 
+          {
+            content: 'Example todo 2',
+            done: false,
+            editing: false,
+            id: hash()
+          },
+          {
+            content: 'Example todo 3',
+            done: false,
+            editing: false,
+            id: hash()
+          },
+          { 
+            content: 'Example todo 4',
+            done: false,
+            editing: false,
+            id: hash()
           }
         ]
       }
-    ]
+    }
   },
   mutations: {
     
     /* Todo mutations */
     ADD_TODO (state, content) {
-      state.todos.unshift({
+      const todos = state.lists[state.currentList].todos;
+      todos.unshift({
         content,
         done: false,
         editing: false,
@@ -43,46 +54,54 @@ export default new Vuex.Store({
       });
     },
     REMOVE_TODO (state, todo) {
-      const index = state.todos.indexOf(todo);
-      state.todos.splice(index, 1);
+      const index = state.lists[state.currentList].todos.indexOf(todo);
+      state.lists[state.currentList].todos.splice(index, 1);
     },
     EDIT_TODO (state, todo) {
-      const index = state.todos.indexOf(todo);
-      state.todos[index].editing = true;
+      const index = state.lists[state.currentList].todos.indexOf(todo);
+      state.lists[state.currentList].todos[index].editing = true;
     },
     SAVE_TODO (state, { todo, update }) {
-      const index = state.todos.indexOf(todo);
-      state.todos[index].content = update;
-      state.todos[index].editing = false;
+      const index = state.lists[state.currentList].todos.indexOf(todo);
+      state.lists[state.currentList].todos[index].content = update;
+      state.lists[state.currentList].todos[index].editing = false;
     },
     MARK_DONE (state, todo) {
-      const index = state.todos.indexOf(todo);
-      state.todos[index].done = !state.todos[index].done;
+      const index = state.lists[state.currentList].todos.indexOf(todo);
+      state.lists[state.currentList].todos[index].done = !state.todos[index].done;
     },
     REPLACE_TODOS (state, todos) {
-      state.todos = [...todos];
+      state.lists[state.currentList].todos = [...todos];
     },
 
     /* List Mutation */
     ADD_LIST (state, list) {
-      state.lists.unshift({
-        title: list,
-        id: hash(),
-        list: []
-      });
+      const newListId = hash();
+      state.lists = {
+        ...state.lists,
+        [newListId]: {
+          title: list,
+          id: newListId,
+          list: []
+        }
+      };
     },
+
     REMOVE_LIST (state, list) {
-      const index = state.lists.indexOf(list);
-      state.lists.splice(index, 1);
+      delete state.lists[list];
     },
-    UPDATE_LIST (state, update) {
-      state.lists.find(li => li.id === update.id).todos = update.todos;
+
+    UPDATE_LIST_TODOS (state, update) {
+      state.lists.find(list => list.id === update.id).todos = update.todos;
+    },
+
+    CHANGE_ACTIVE_LIST (state, list_ID) {
+      state.currentList = list_ID;
     },
 
     REPLACE_STATE(state, newState) {
       state.currentList = newState.currentList;
-      state.todos = [ ...newState.todos ];
-      state.lists = [ ...newState.lists ];
+      state.lists = { ...newState.lists };
     }
   },
   actions: {
@@ -124,23 +143,22 @@ export default new Vuex.Store({
     reorderTodos ({ commit, dispatch }, todos) {
       commit('REPLACE_TODOS', todos);
       dispatch('updateStorage');
-    }
+    },
+
+    changeList({commit, dispatch}, list_ID) {
+      commit('CHANGE_ACTIVE_LIST', list_ID);
+      dispatch('updateStorage');
+    },
   },
   getters: {
     getState: state => {
       return state;
     },
-    getTodos: state => {
-      return state.todos;
+    getCurrentList: (state) => {
+      return state.lists[state.currentList];
     },
     getAllLists: state => {
       return state.lists;
     },
-    getDoneTodos: state => {
-      return state.todos.filter(todo => todo.done);
-    },
-    getUnDoneTodos: state => {
-      return state.todos.filter(todo => !todo.done);
-    }
   }
 });
