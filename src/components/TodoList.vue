@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper">
     <sorted-list
+      v-if="currentList"
       v-model="sortedTodos"
       :use-drag-handle="true"
       :class="{'dragging': dragging}"
@@ -13,10 +14,9 @@
         tag="ul"
       >
         <to-do
-          v-for="(todo, index) in todos"
-          v-show="todos"
+          v-for="(todo, index) in currentList.todos"
           :key="todo.id"
-          :index="index"
+          :index="parseInt(index)"
           :todo="todo"
           :dragging="dragging"
         />
@@ -32,7 +32,7 @@ import SortedList from './SortedList';
 import { setTimeout } from 'timers';
 
 export default {
-  name: 'Todos',
+  name: 'TodoList',
   components: {
     'sorted-list': SortedList,
     'to-do': Todo
@@ -44,13 +44,11 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({
-      todos: 'getTodos'
-    })
+    ...mapGetters({ currentList: 'getCurrentList' })
   },
   methods: {
     dragStart() {
-      this.sortedTodos = Array.from(this.todos);
+      this.sortedTodos = Array.from(this.currentList.todos);
     },
     sortEnd() {
       this.dragging = true;
