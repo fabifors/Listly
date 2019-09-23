@@ -7,10 +7,23 @@
       <ul class="list-overview"> 
         <li
           v-for="list in lists"
-          :key="list.id" class="list-overview__item"
+          :key="list.id" 
+          class="todo-list"
+          @click="openList(list.id)"
         >
-          <h4>{{ list.title }}</h4>
-        </li>          
+          <h4 class="todo-list__title">
+            {{ list.title }}
+          </h4>
+          <ul class="todo-list__summary">
+            <li 
+              v-for="todo in list.todos" 
+              :key="todo.id"
+              class="todo-list__summary__item" 
+            >
+              {{ todo.content }}
+            </li>
+          </ul>
+        </li>
       </ul>
     </main>
   </section>
@@ -28,7 +41,9 @@ export default {
     ...mapGetters({lists: 'getAllLists'})
   },
   methods: {
-    
+    openList(id) {
+      this.$store.dispatch('changeList', id);
+    }
   }
 };
 </script>
@@ -45,10 +60,11 @@ export default {
   .list-overview {
     padding: 0;
     list-style: none;
+  }
 
-    &__item {
-      padding: 0.5rem;
-      border: 1px solid lightgray;
-    }
+  .todo-list {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid lightgray;
+
   }
 </style>
