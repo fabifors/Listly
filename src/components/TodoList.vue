@@ -1,11 +1,21 @@
 <template>
-  <div class="wrapper">
+  <div class="todos-container">
+    <aside class="todos-section__info">
+      <h4 class="todos-section__info__label">
+        <span class="todos-section__info__label__badge">
+          {{ currentList.todos.filter(todo => todo.done).length }}
+        </span>out of
+        <span class="todos-section__info__label__badge">
+          {{ currentList.todos.length }}
+        </span>todos marked as done
+      </h4>
+    </aside>
     <sorted-list
       v-if="currentList"
       v-model="sortedTodos"
       :use-drag-handle="true"
       :class="{'dragging': dragging}"
-      @sort-start="dragStart()"
+      @sort-start="dragStart($event)"
       @sort-end="sortEnd()"
       @input="reorder($event)"
     >
@@ -18,6 +28,7 @@
           :key="todo.id"
           :index="parseInt(index)"
           :todo="todo"
+          :listId="currentList.id"
           :dragging="dragging"
         />
       </transition-group>
@@ -47,14 +58,15 @@ export default {
     ...mapGetters({ currentList: 'getCurrentList' })
   },
   methods: {
-    dragStart() {
+    dragStart(e) {
       this.sortedTodos = Array.from(this.currentList.todos);
     },
     sortEnd() {
       this.dragging = true;
     },
     reorder(list) {
-      this.$store.dispatch('reorderTodos', list);
+      const listId = this.currentList.id
+      this.$store.dispatch('reorderTodos', { list, listId });
       setTimeout(() => {
         this.dragging = false;
       }, 10);
@@ -65,8 +77,19 @@ export default {
 
 <style scoped lang="scss">
 
-.wrapper {
-  padding: 1rem;
+.todos-section__info {
+  &__label {
+    &__badge {
+      text-align: center;
+      padding: 0.2rem 0.15rem 0.2rem 0.3rem;
+      font-weight: 800;
+      font-size: 0.8em;
+      color: var(--text-color-medium);
+      border: 1px solid var(--background-color);
+      border-radius: 5px;
+      margin-right: 0.2rem;
+    }
+  }
 }
 
 .dragging .animation-move {

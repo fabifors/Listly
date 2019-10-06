@@ -5,84 +5,59 @@ import { hash } from './functions';
 
 Vue.use(Vuex);
 
+
+
 export default new Vuex.Store({
   state: {
-    currentList: 'as2-asd2-asd3-k2-asd2',
-    lists : {
-      'as2-asd2-asd3-k2-asd2': {
-        id: 'as2-asd2-asd3-k2-asd2',
-        title: 'My list',
-        todos: [
-          {
-            content: 'Example todo 1',
-            done: false,
-            editing: false,
-            id: hash()
-          }, 
-          {
-            content: 'Example todo 2',
-            done: false,
-            editing: false,
-            id: hash()
-          },
-          {
-            content: 'Example todo 3',
-            done: false,
-            editing: false,
-            id: hash()
-          },
-          { 
-            content: 'Example todo 4',
-            done: false,
-            editing: false,
-            id: hash()
-          }
-        ]
-      }
+    currentList: '',
+    lists : {},
+    theme: {
+      color: 70,
+      dark_mode: false
     }
   },
   mutations: {
     
     /* Todo mutations */
-    ADD_TODO (state, content) {
-      const todos = state.lists[state.currentList].todos;
+    ADD_TODO (state, { todo, listId }) {
+      const todos = state.lists[listId].todos;
       todos.unshift({
-        content,
+        content: todo,
         done: false,
         editing: false,
         id: hash()
       });
     },
-    REMOVE_TODO (state, todo) {
-      const index = state.lists[state.currentList].todos.indexOf(todo);
-      state.lists[state.currentList].todos.splice(index, 1);
+    REMOVE_TODO (state, { todo, listId }) {
+      const index = state.lists[listId].todos.indexOf(todo);
+      state.lists[listId].todos.splice(index, 1);
     },
-    EDIT_TODO (state, todo) {
-      const index = state.lists[state.currentList].todos.indexOf(todo);
-      state.lists[state.currentList].todos[index].editing = true;
+    EDIT_TODO (state, { todo, listId }) {
+      const index = state.lists[listId].todos.indexOf(todo);
+      state.lists[listId].todos[index].editing = true;
     },
-    SAVE_TODO (state, { todo, update }) {
-      const index = state.lists[state.currentList].todos.indexOf(todo);
-      state.lists[state.currentList].todos[index].content = update;
-      state.lists[state.currentList].todos[index].editing = false;
+    SAVE_TODO (state, { todo, update, listId }) {
+      const index = state.lists[listId].todos.indexOf(todo);
+      state.lists[listId].todos[index].content = update;
+      state.lists[listId].todos[index].editing = false;
     },
-    MARK_DONE (state, todo) {
-      const index = state.lists[state.currentList].todos.indexOf(todo);
-      state.lists[state.currentList].todos[index].done = !state.todos[index].done;
+    MARK_DONE (state, { todo, listId }) {
+      const index = state.lists[listId].todos.indexOf(todo);
+      const stateTodo = state.lists[listId].todos[index];
+      stateTodo.done = !stateTodo.done;
     },
-    REPLACE_TODOS (state, todos) {
-      state.lists[state.currentList].todos = [...todos];
+    REPLACE_TODOS (state, { list , listId }) {
+      state.lists[listId].todos = [...list];
     },
 
     /* List Mutation */
-    ADD_LIST (state, list) {
-      const newListId = hash();
+    ADD_LIST (state, id) {
       state.lists = {
         ...state.lists,
-        [newListId]: {
-          title: list,
-          id: newListId,
-          list: []
+        [id]: {
+          title: 'List title',
+          id,
+          todos: []
         }
       };
     },
@@ -99,60 +74,90 @@ export default new Vuex.Store({
       state.currentList = list_ID;
     },
 
+    CHANGE_LIST_TITLE (state, { title, listId }) {
+      state.lists[listId].title = title;
+    },
+
     REPLACE_STATE(state, newState) {
       state.currentList = newState.currentList;
       state.lists = { ...newState.lists };
     }
   },
   actions: {
-    init ({commit}) {
+    init ({ state, commit }) {
       if(localStorage.state) {
         commit('REPLACE_STATE', JSON.parse(localStorage.state)); 
+      } else {
+        commit('REPLACE_STATE', INITIAL_STATE);
       }
+
+      // Maybe relocate user to list view if no current list is selected on boot.
+      // if (!state.currentList) {
+      //   this.$router.replace('/lists');
+      // }
     },
 
     updateStorage () {
       localStorage.state = JSON.stringify(this.getters.getState);
     },
 
-    addTodo ({ commit, dispatch }, todo) {
-      commit('ADD_TODO', todo);
+    /* Todo Actions */
+
+    addTodo ({ commit, dispatch }, {todo, listId}) {
+      commit('ADD_TODO', { todo, listId });
       dispatch('updateStorage');
     },
 
-    removeTodo ({ commit, dispatch }, todo) {
-      commit('REMOVE_TODO', todo);
+    removeTodo ({ commit, dispatch }, {todo, listId}) {
+      commit('REMOVE_TODO', {todo, listId});
       dispatch('updateStorage');
     },
 
-    editTodo ({ commit, dispatch }, todo) {
-      commit('EDIT_TODO', todo);
+    editTodo ({ commit, dispatch }, {todo, listId}) {
+      commit('EDIT_TODO', {todo, listId});
       dispatch('updateStorage');
     },
 
-    saveTodo ({ commit, dispatch }, todo) {
-      commit('SAVE_TODO', todo);
+    saveTodo ({ commit, dispatch }, {todo, update, listId}) {
+      commit('SAVE_TODO', {todo, update, listId});
       dispatch('updateStorage');
     },
 
-    markDone ({ commit, dispatch }, todo) {
-      commit('MARK_DONE', todo);
+    markDone ({ commit, dispatch }, { todo, listId }) {
+      commit('MARK_DONE', { todo, listId });
       dispatch('updateStorage');
     },
 
-    reorderTodos ({ commit, dispatch }, todos) {
-      commit('REPLACE_TODOS', todos);
+    reorderTodos ({ commit, dispatch }, { list, listId }) {
+      commit('REPLACE_TODOS', { list, listId });
       dispatch('updateStorage');
     },
 
-    changeList({commit, dispatch}, list_ID) {
-      commit('CHANGE_ACTIVE_LIST', list_ID);
+    /* List Actions */
+
+    addList({commit, dispatch}, title) {
+      const id = hash();
+      commit('ADD_LIST', {title, id});
+      dispatch('updateStorage');
+      commit('CHANGE_ACTIVE_LIST', id);
+    },
+
+    changeList({commit, dispatch}, listId) {
+      commit('CHANGE_ACTIVE_LIST', listId);
       dispatch('updateStorage');
     },
+
+    changeListTitle({commit, dispatch}, title) {
+      commit('CHANGE_LIST_TITLE', title);
+      dispatch('updateStorage');
+    }
   },
   getters: {
     getState: state => {
       return state;
+    },
+    getCurrentListId: state => {
+      return state.currentList;
     },
     getCurrentList: (state) => {
       return state.lists[state.currentList];
@@ -160,5 +165,53 @@ export default new Vuex.Store({
     getAllLists: state => {
       return state.lists;
     },
+    getListTitle: state => {
+      const title = state.lists[state.currentList].title;
+      if(title){
+        return title;
+      } else {
+        return 'List title';
+      }
+    }
   }
 });
+
+const INITIAL_STATE = {
+  theme: {
+    color: 70,
+    dark_mode: false
+  },
+  currentList: '',
+  lists: {
+    'as2-asd2-asd3-k2-asd2': {
+      id: 'as2-asd2-asd3-k2-asd2',
+      title: 'My list',
+      todos: [
+        {
+          content: 'Example todo 1',
+          done: false,
+          editing: false,
+          id: hash()
+        }, 
+        {
+          content: 'Example todo 2',
+          done: false,
+          editing: false,
+          id: hash()
+        },
+        {
+          content: 'Example todo 3',
+          done: false,
+          editing: false,
+          id: hash()
+        },
+        { 
+          content: 'Example todo 4',
+          done: false,
+          editing: false,
+          id: hash()
+        }
+      ]
+    }
+  }
+};

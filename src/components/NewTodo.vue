@@ -1,8 +1,25 @@
 <template>
   <div class="new-todo">
-    <h2 class="new-todo__heading">
-      What should I do?
-    </h2>
+    <header v-if="listTitle">
+      <h2
+        v-if="!title.editing"
+        class="new-todo__heading" @click="editTitle()"
+      >
+        {{ listTitle }}
+      </h2>
+      <form 
+        v-else
+        class="new-title" 
+        @submit.prevent="changeTitle()"
+      >
+        <input 
+          v-model="title.content" 
+          class="new-title__input" 
+          autocomplete="off"  
+          ref="newTitle"
+        >
+      </form>
+    </header>
     <form
       class="new-todo__form"
       @submit.prevent="addTodo(content)"
@@ -32,33 +49,80 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
   name: 'NewTodo',
   data: () => {
     return {
-      content: ''
+      content: '',
+      title: {
+        content: '',
+        editing: false
+      }
     };
+  },
+  computed: {
+    ...mapGetters({
+      listTitle: 'getListTitle',
+      listId: 'getCurrentListId'
+    })
   },
   methods: {
     addTodo(todo) {
       if(!this.content) {
         return;
       }
-      this.$store.dispatch('addTodo', todo);
+      this.$store.dispatch('addTodo', { todo, listId: this.listId });
       this.content = '';
+    },
+
+    editTitle() {
+      this.title.editing = true;
+      this.title.content = this.listTitle;
+      setTimeout(() => {
+        this.$refs.newTitle.focus();
+      }, 25)
+    },
+
+    changeTitle() {
+      const title = this.title.content;
+      this.$store.dispatch('changeListTitle', { title, listId: this.listId});
+      this.title.content = '';
+      this.title.editing = false;
     }
-  }
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 .new-todo {
-  color: hsl(248, 61%, 15%);
-  padding: 1rem;
+  color: var(--text-color-dark);
+  margin-bottom: 2rem;
+  
+  @media screen and (min-width: 500px) {
+    // padding: 1rem;
+  }
+  .new-title {
+    margin: 0 0 1.5rem;
+    padding: 0;
+
+    &__input {
+      width: 100%;
+      font-family: 'Proxima Nova';
+      font-size: 3em;
+      border: 2px dashed var(--background-color);
+      border-radius: 5px;
+      background: none;
+      color: var(--text-color-dark);
+      font-weight: bold;
+      padding: 0;
+    }
+  }
 
   &__heading {
     font-size: 3em;
-    color: hsl(248, 61%, 25%);
+    margin: 0 0 1.5rem;
+    color: var(--text-color-dark);
   }
 
   &__form {
@@ -81,7 +145,9 @@ export default {
       line-height: 1.4em;
       font-size: 1em;
       border: 2px solid;
-      border-color: hsl(226, 30%, 85%);
+      color: var(--text-color-dark);
+      font-weight: 400;
+      border-color: var(--text-color-medium);
       border-radius: 5px;
     }
 
@@ -95,7 +161,7 @@ export default {
       border: none;
       border-radius: 5px;
       background: none;
-      color: hsl(226, 30%, 75%);
+      color: var(--text-color-medium);
     }
   }
 }

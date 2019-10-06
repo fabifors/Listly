@@ -2,10 +2,9 @@
   <div class="navbar">
     <div class="navbar__left">
       <router-link to="/">
-        <img
-          class="logo"
-          src="../assets/logo.png"
-        >
+        <h2 class="logo">
+          LISTLY
+        </h2>
       </router-link>
     </div>
     <div class="navbar__right">
@@ -47,8 +46,11 @@ export default {
   display: flex;
 
   &__left {
+    a {
+      text-decoration: none;
+    }
     .logo {
-      height: 40px;
+      font-size: 1.6rem;
     }
   }
   &__right {
@@ -56,9 +58,7 @@ export default {
     flex-grow: 2;
 
     .navigation {
-
       &__list {
-        
         width: 100%;
         padding: 0;
 
@@ -70,18 +70,15 @@ export default {
         list-style: none;
 
         &__item {
-          background: hsl(226, 30%, 93%);
           padding: 0.5rem 0.75rem;
-          border-radius: 5px;
-          color: hsl(248, 61%, 15%);
+          color: var(--text-color-medium);
           text-decoration: none;
           font-family: 'Proxima Nova', Helvetica, Arial, sans-serif;
-          
+          font-weight: 600;
 
           &:not(:first-child) {
             margin-left: 1rem;
           }
-        
         }
         
       }
