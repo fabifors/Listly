@@ -1,29 +1,41 @@
-# vue-todo
+![Cool preview image](img/preview.png)
 
-## Project setup
+<hr>
+
+# Wohoo another todo app!
+
+Welcome to my personal project. The most cliché idea yet! Building a todo application in vue! Wow, you must be thinking: What a creative guy! Well thank you for your thoughts. Looks can be deceiving, my guy. The idea is, however, to build a professional, releasable, cool and clean looking To-do application using Vue, Vuex and lots of other stuff. Probably... 
+
+So just enjoy, fork it, or just criteque my code in a good ol' issue.
+
+## If you wanna try it
+
 ```
+git clone https://github.com/fabifors/vue-todo
 yarn install
 ```
 
-### Compiles and hot-reloads for development
+### If you wanna serve it
+
 ```
 yarn run serve
 ```
 
-### Compiles and minifies for production
+### If you wanna build it
 ```
 yarn run build
 ```
 
-### Run your tests
+### If you wanna tes...
 ```
-yarn run test
+yarn run -i dont/have/any --tests
 ```
 
-### Lints and fixes files
+### If you wanna lint
 ```
 yarn run lint
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+*lint and fix*
+```
+yarn run lint --fix
+```
