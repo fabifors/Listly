@@ -51,6 +51,8 @@ export default {
     }
     .logo {
       font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text-color-dark--muted)
     }
   }
   &__right {

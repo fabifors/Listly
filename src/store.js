@@ -11,6 +11,7 @@ export default new Vuex.Store({
   state: {
     currentList: '',
     lists : {},
+    categories: {},
     theme: {
       color: 70,
       dark_mode: false
@@ -81,10 +82,11 @@ export default new Vuex.Store({
     REPLACE_STATE(state, newState) {
       state.currentList = newState.currentList;
       state.lists = { ...newState.lists };
+      state.categories = {...newState.categories};
     }
   },
   actions: {
-    init ({ state, commit }) {
+    init ({ commit }) {
       if(localStorage.state) {
         commit('REPLACE_STATE', JSON.parse(localStorage.state)); 
       } else {
@@ -166,12 +168,16 @@ export default new Vuex.Store({
       return state.lists;
     },
     getListTitle: state => {
-      const title = state.lists[state.currentList].title;
-      if(title){
-        return title;
-      } else {
-        return 'List title';
+      if(state.currentList) {
+        const title = state.lists[state.currentList].title;
+        if(title){
+          return title;
+        }
       }
+    },
+    getAllListCategories: state => {
+      console.log(state);
+      return state.categories;
     }
   }
 });
@@ -182,36 +188,48 @@ const INITIAL_STATE = {
     dark_mode: false
   },
   currentList: '',
+  categories: {
+    'kas2d-ad-a2d-a2d-2ad': {
+      id: 'kas2d-ad-a2d-a2d-2ad',
+      name: 'Daily',
+      lists: ['as2-asd2-asd3-k2-asd2']
+    }
+  },
   lists: {
     'as2-asd2-asd3-k2-asd2': {
       id: 'as2-asd2-asd3-k2-asd2',
-      title: 'My list',
+      title: 'An Awesome List',
+      category: 'kas2d-ad-a2d-a2d-2ad',
       todos: [
         {
-          content: 'Example todo 1',
+          content: 'Code like a monkey',
           done: false,
           editing: false,
           id: hash()
         }, 
         {
-          content: 'Example todo 2',
+          content: 'Pet the cat',
           done: false,
           editing: false,
           id: hash()
         },
         {
-          content: 'Example todo 3',
+          content: 'Take a dump',
           done: false,
           editing: false,
           id: hash()
         },
         { 
-          content: 'Example todo 4',
-          done: false,
+          content: 'Make something useless',
+          done: true,
           editing: false,
           id: hash()
         }
-      ]
+      ],
+      timestamp: {
+        created: 1569452509,
+        updated: 1570402909
+      }
     }
   }
 };

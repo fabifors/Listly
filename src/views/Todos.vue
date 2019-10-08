@@ -1,11 +1,7 @@
 <template>
-  <div class="container">
-    <div class="layout-section">
-      <new-todo />
-    </div>
-    <div class="layout-section">
-      <todo-list />
-    </div>
+  <div class="layout-section">
+    <new-todo />
+    <todo-list />
     <repo-information />
   </div>
 </template>

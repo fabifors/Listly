@@ -3,22 +3,21 @@
     class="todos__item"
     :class="{ 'marked-done':todo.done }"
   >
-  <div class="todos__item__actions">
-    <i
-      v-handle
-      class="handle fas fa-grip-vertical"
-    />
-    <input
-      v-model="todo.done" 
-      type="checkbox" 
-      :class="`todos__item__content__done ${dragging ? 'no-transition': null}`"
-    >
-  </div>
+    <div class="todos__item__actions">
+      <i
+        v-handle
+        class="handle fas fa-grip-vertical"
+      />
+      <input
+        v-model="todo.done" 
+        type="checkbox" 
+        :class="`todos__item__content__done ${dragging ? 'no-transition': null}`"
+      >
+    </div>
     <div
       class="todos__item__content"
       @click="markDone(todo)"
     >
-      
       <form
         v-if="todo.editing"
         class="edit-form"
@@ -98,12 +97,12 @@ export default {
 
   methods: {
     remove(todo) {
-      const listId = this.listId
+      const listId = this.listId;
       this.$store.dispatch('removeTodo', {todo, listId});
     },
 
     editTodo(todo) {
-      const listId = this.listId
+      const listId = this.listId;
       this.$store.dispatch('editTodo', {todo, listId});
       this.edit = todo.content;
       setTimeout(() => {
@@ -112,14 +111,14 @@ export default {
     },
 
     saveTodo(todo, edit) {
-      const listId = this.listId
-      const update = this.edit
+      const listId = this.listId;
+      const update = this.edit;
       this.$store.dispatch('saveTodo', { todo, update, listId });
     },
 
     markDone(todo) {
       if (!todo.editing) {
-        const listId = this.listId
+        const listId = this.listId;
         this.$store.dispatch('markDone', { todo, listId });
       }
     }
@@ -140,7 +139,6 @@ export default {
 }
 
 .todos__item {
-  // clip-path: inset-rectangle(0%, 0%, 0%, 10%);
   font-family: "Proxima Nova", Helvetica, Arial, sans-serif;
   color: var(--text-color-dark);
 

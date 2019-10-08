@@ -28,7 +28,7 @@
           :key="todo.id"
           :index="parseInt(index)"
           :todo="todo"
-          :listId="currentList.id"
+          :list-id="currentList.id"
           :dragging="dragging"
         />
       </transition-group>
@@ -65,7 +65,7 @@ export default {
       this.dragging = true;
     },
     reorder(list) {
-      const listId = this.currentList.id
+      const listId = this.currentList.id;
       this.$store.dispatch('reorderTodos', { list, listId });
       setTimeout(() => {
         this.dragging = false;
@@ -78,6 +78,7 @@ export default {
 <style scoped lang="scss">
 
 .todos-section__info {
+  margin-bottom: 1rem;
   &__label {
     &__badge {
       text-align: center;

@@ -1,10 +1,12 @@
 <template>
   <section class="layout-section">
+    <!-- {{window.width}} -->
     <header class="title-section">
       <h2 class="title-section__title">
         My lists
       </h2>
       <form
+        v-if="window.width >= 500"
         class="search-form"
         @submit.prevent=""
       >
@@ -12,7 +14,7 @@
           v-model="search" 
           type="text" 
           class="search-form__input" 
-          placeholder="Search" 
+          placeholder="Search"
         >
         <i class="fad fa-search search-form__icon" />
       </form>
@@ -35,9 +37,9 @@
           All lists
         </li>
         <li
-          v-for="(cat, index) in dummy.categories"
+          v-for="(cat, index) in categories"
           :key="index" 
-          :class="`filter-tag ${cat.active ? 'active': null}`"
+          :class="`filter-tag ${activeFilters.indexOf(cat) != -1 ? 'active': null}`"
           @click="activate(cat)"
         >
           {{ cat.name }}
@@ -61,7 +63,7 @@
               :key="index" 
               class="active-filter-list__item"
             >
-              {{ filter }}
+              {{ filter.name }}
             </li>
           </ul>
           <span
@@ -71,7 +73,7 @@
         </div>
         <div class="list-section__info__right">
           <h4 class="active-filter-label">
-            Number of lists
+            <span class="desktop-only">Number of </span>lists
           </h4>
           <span class="active-filter-total">
             {{ numberOfLists }}
@@ -92,7 +94,7 @@
               {{ list.title }}
             </h4>
             <span class="todo-list__header__category"> 
-              {{ list.category ? list.category : 'No category' }}
+              {{ list.category ? categories[list.category].name: 'No category' }}
             </span>
           </header>
           <ul class="todo-list__summary">
@@ -127,33 +129,22 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import handleResize from '@/mixins/handleResize';
 
 export default {
   name: 'Lists',
+  mixins: [handleResize],
   data: () => {
     return {
       search: '',
-      activeFilters: ["Daily todo's"],
-      dummy: {
-        categories: [ 
-          {
-            name: "Daily todo's",
-            active: true
-          },
-          {
-            name: 'Shopping',
-            active: false
-          },
-          {
-            name: 'Food',
-            active: false
-          }
-        ]
-      }
+      activeFilters: []
     };
   },
   computed: {
-    ...mapGetters({lists: 'getAllLists'}),
+    ...mapGetters({
+      lists: 'getAllLists',
+      categories: 'getAllListCategories'
+    }),
 
     filteredList () {
       return [];
@@ -175,20 +166,18 @@ export default {
     },
 
     activate(cat) {
-      const category = this.dummy.categories.find(c => c === cat);
-      if(category.active) {
-        category.active = !category.active;
-        const i = this.activeFilters.indexOf(category.name);
-        this.activeFilters.splice(i, 1);
+      const index = this.activeFilters.indexOf(cat);
+      if (index != -1) {
+        this.activeFilters.splice(index, 1);
+        console.log('Yay it ran');
         return;
       }
-      category.active = !category.active;
-      this.activeFilters.push(category.name);
+
+      this.activeFilters.push(cat);
     },
 
     clearActiveFilters () {
       this.activeFilters = [];
-      this.dummy.categories.map(c => c.active = false);
     },
 
     filterListOnSearch () {
@@ -199,9 +188,8 @@ export default {
       if (this.lists) {
         const list = this.lists[listId];
         const todos = [...list.todos].sort((a, b) => a.done - b.done);
-        console.log(todos.map(el => el.done))
         if (todos.length > 5) {
-          todos.length = 5
+          todos.length = 5;
         }
         return todos;
       }
@@ -224,7 +212,7 @@ export default {
     font-size: 4em;
     margin-right: auto;
     color: var(--text-color-dark);
-    margin: 1rem 0;
+    margin: 0.5rem 0 0.75rem;
   }
 
   .search-form {
@@ -261,6 +249,7 @@ export default {
   @media screen and (min-width: 500px) {
     flex-direction: row;
     align-items: center;
+    margin-bottom: 1.5rem;
     &__title {
       margin: 0;
       flex-grow: 2;
@@ -269,21 +258,24 @@ export default {
 }
 
 .filter-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.0rem;
+  @media screen and (min-width:500px) {
+    margin-bottom: 1.5rem;
+  }
   &__header {
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-bottom: 0rem;
+    margin-bottom: 0.75rem;
     &__icon {
       height: 12px;
       font-size: 14px;
       margin-right: 0.5rem;
-      color: var(--text-color-dark);
+      color: var(--text-color-muted--medium);
     }
 
     &__title {
-      color: var(--text-color-dark--muted);
+      color: var(--text-color-muted--light);
       text-transform: uppercase;
       font-size: 1.1em;
       font-weight: 800;
@@ -309,10 +301,10 @@ export default {
       }
 
       &.active {
-        background: var(--text-color-medium);
-        color: var(--text-color-light);
+        background: var(--background-color-light);
+        // color: var(--text-color-light);
         &:hover {
-          background: hsl(251, 26%, 55%);
+          background: var(--text-color-muted--light);
         }
       }
     }
@@ -324,14 +316,23 @@ export default {
     display: flex;
     flex-direction: row;
     align-items: center;
+    margin-bottom: 0.5rem;
+    padding: 0.25rem;
+    border-bottom: 1px dashed var(--background-color-light);
 
     .active-filter-label {
       text-transform: uppercase;
-      color: var(--text-color-medium-lighter);
-      font-size: 0.8em;
+      color: var(--text-color-muted--light);
+      font-size: 0.75em;
       font-weight: 800;
       letter-spacing: 0.5px;
-      margin-right: 1rem;
+      margin-right: 0.5rem;
+
+      @media screen and (min-width: 500px) {
+        margin-right: 1rem;
+        font-size: 0.85em;
+        
+      }
     }
 
     &__left {
@@ -347,15 +348,23 @@ export default {
         flex-direction: row;
         &__item {
           font-weight: 800;
+          font-size: 0.85em;
           color: var(--text-color-medium-lighter);
           &:not(:last-child) {
             margin-right: 0.75rem;
+          }
+          @media screen and (min-width: 500px) {
+            font-size: initial;
           }
         }
       }
       .active-filter-showing-all {
         font-weight: 800;
         color: var(--text-color-medium-lighter);
+        font-size: 0.85em;
+         @media screen and (min-width: 500px) {
+            font-size: initial;
+          }
       }
     }
 
@@ -363,13 +372,20 @@ export default {
       display: flex;
       flex-direction: row;
       align-items: center;
+
+
       .active-filter-total {
-        padding: 0.2rem 0.5rem;
-        font-weight: 800;
-        font-size: 0.8em;
+        padding: 0.2rem 0.4rem;
+        font-weight: 900;
+        font-size: 0.75em;
         color: var(--text-color-medium);
         background: var(--text-color-light);
         border-radius: 2px;
+
+        @media screen and (min-width: 500px) {
+          padding: 0.2rem 0.5rem;
+          font-size: 0.8em;
+        }
       }
     }
 
@@ -390,6 +406,7 @@ export default {
         display: flex;
         flex-direction: row;
         align-items: center;
+        margin-bottom: 0.4rem;
         &__title {
           margin-top: 0.5em;
           margin-bottom: 0.5em;
@@ -409,12 +426,14 @@ export default {
         flex-grow: 2;
         list-style: none;
         padding: 0;
+        margin-bottom: 1.25rem;
         &__item {
           padding: 0.1rem;
 
           &__checkbox {
             position: relative;
             margin-right: 0.75rem;
+            outline: none;
             &::before {
               content: '';
               display: block;
@@ -433,6 +452,7 @@ export default {
             .todo-list__summary__item {
               &__content {
                 text-decoration: line-through;
+                color: var(--text-color-dark--muted);
               }
               &__checkbox {
                 &::before {
@@ -443,7 +463,6 @@ export default {
             
           }
           &__content {
-            
             font-weight: 600;
           }
           &:not(:last-child) {

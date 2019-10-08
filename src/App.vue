@@ -32,11 +32,16 @@ export default {
   --background-color: hsl(251, 42%, 87%);
   --background-color-light: hsl(251, 20%, 94%);
   --white-color: hsl(240, 25%, 98%);
+
+  --text-color-muted--light: hsla(251, 13%, 52%, 0.5);
+  --text-color-muted--medium: hsla(251, 13%, 52%, 0.8);
 }
 
 * {
   box-sizing: border-box;
   outline-color: #fff;
+  margin: 0;
+  padding: 0;
 }
 
 input:focus {
@@ -57,19 +62,26 @@ body { margin: 0;}
 }
 
 .main-wrapper {
-  max-width: 750px;
+  max-width: 950px;
   margin: 0 auto;
   position: relative;
 }
 
+.desktop-only {
+  display: none;
+  @media screen and (min-width: 500px) {
+    display: block;
+  }
+}
+
 .layout-section {
-  max-width: 800px;
-  padding: 0 0.5rem;
+  max-width: 900px;
+  padding: 0rem 1rem;
   margin-right: auto;
   margin-left: auto;
 
   @media screen and (min-width: 500px) {
-    padding: 0 1.5rem;
+    padding: 2rem 1.5rem;
   }
 }
 </style>

@@ -13,10 +13,10 @@
         @submit.prevent="changeTitle()"
       >
         <input 
+          ref="newTitle" 
           v-model="title.content" 
-          class="new-title__input" 
-          autocomplete="off"  
-          ref="newTitle"
+          class="new-title__input"  
+          autocomplete="off"
         >
       </form>
     </header>
@@ -81,7 +81,7 @@ export default {
       this.title.content = this.listTitle;
       setTimeout(() => {
         this.$refs.newTitle.focus();
-      }, 25)
+      }, 25);
     },
 
     changeTitle() {
@@ -97,13 +97,12 @@ export default {
 <style lang="scss" scoped>
 .new-todo {
   color: var(--text-color-dark);
-  margin-bottom: 2rem;
+  margin: 1rem 0 1.25rem;
   
   @media screen and (min-width: 500px) {
-    // padding: 1rem;
+    margin-bottom: 2rem;
   }
   .new-title {
-    margin: 0 0 1.5rem;
     padding: 0;
 
     &__input {
