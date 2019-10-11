@@ -21,44 +21,55 @@ export default new Vuex.Store({
     
     /* Todo mutations */
     ADD_TODO (state, { todo, listId }) {
+      const timestamp = Date.now();
       const todos = state.lists[listId].todos;
       todos.unshift({
         content: todo,
         done: false,
         editing: false,
-        id: hash()
+        id: hash(),
+        created: timestamp,
+        edited: timestamp
       });
     },
+
     REMOVE_TODO (state, { todo, listId }) {
       const index = state.lists[listId].todos.indexOf(todo);
       state.lists[listId].todos.splice(index, 1);
     },
+
     EDIT_TODO (state, { todo, listId }) {
       const index = state.lists[listId].todos.indexOf(todo);
       state.lists[listId].todos[index].editing = true;
     },
+
     SAVE_TODO (state, { todo, update, listId }) {
       const index = state.lists[listId].todos.indexOf(todo);
       state.lists[listId].todos[index].content = update;
       state.lists[listId].todos[index].editing = false;
     },
+
     MARK_DONE (state, { todo, listId }) {
       const index = state.lists[listId].todos.indexOf(todo);
       const stateTodo = state.lists[listId].todos[index];
       stateTodo.done = !stateTodo.done;
     },
+
     REPLACE_TODOS (state, { list , listId }) {
       state.lists[listId].todos = [...list];
     },
 
     /* List Mutation */
     ADD_LIST (state, id) {
+      const timestamp = Date.now();
       state.lists = {
         ...state.lists,
         [id]: {
           title: 'List title',
           id,
-          todos: []
+          todos: [],
+          created: timestamp,
+          updated: timestamp
         }
       };
     },
@@ -79,6 +90,10 @@ export default new Vuex.Store({
       state.lists[listId].title = title;
     },
 
+    UPDATE_TIMESTAMP (state, {listId, timestamp}) {
+      state.lists[listId].updated = timestamp;
+    },
+
     REPLACE_STATE(state, newState) {
       state.currentList = newState.currentList;
       state.lists = { ...newState.lists };
@@ -86,7 +101,7 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    init ({ commit }) {
+    init ({ rootState, commit }) {
       if(localStorage.state) {
         commit('REPLACE_STATE', JSON.parse(localStorage.state)); 
       } else {
@@ -94,9 +109,9 @@ export default new Vuex.Store({
       }
 
       // Maybe relocate user to list view if no current list is selected on boot.
-      // if (!state.currentList) {
-      //   this.$router.replace('/lists');
-      // }
+      if (!rootState.currentList) {
+        this.$router.replace('/lists');
+      }
     },
 
     updateStorage () {
@@ -107,51 +122,64 @@ export default new Vuex.Store({
 
     addTodo ({ commit, dispatch }, {todo, listId}) {
       commit('ADD_TODO', { todo, listId });
+      dispatch('updateTimestamp', listId);
       dispatch('updateStorage');
     },
 
     removeTodo ({ commit, dispatch }, {todo, listId}) {
       commit('REMOVE_TODO', {todo, listId});
+      dispatch('updateTimestamp', listId);
       dispatch('updateStorage');
     },
 
     editTodo ({ commit, dispatch }, {todo, listId}) {
       commit('EDIT_TODO', {todo, listId});
+      dispatch('updateTimestamp', listId);
       dispatch('updateStorage');
     },
 
     saveTodo ({ commit, dispatch }, {todo, update, listId}) {
       commit('SAVE_TODO', {todo, update, listId});
+      dispatch('updateTimestamp', listId);
       dispatch('updateStorage');
     },
 
     markDone ({ commit, dispatch }, { todo, listId }) {
       commit('MARK_DONE', { todo, listId });
+      dispatch('updateTimestamp', listId);
       dispatch('updateStorage');
     },
 
     reorderTodos ({ commit, dispatch }, { list, listId }) {
       commit('REPLACE_TODOS', { list, listId });
+      dispatch('updateTimestamp', listId);
       dispatch('updateStorage');
     },
 
     /* List Actions */
 
-    addList({commit, dispatch}, title) {
+    addList ({ commit, dispatch }, title) {
       const id = hash();
       commit('ADD_LIST', {title, id});
       dispatch('updateStorage');
       commit('CHANGE_ACTIVE_LIST', id);
     },
 
-    changeList({commit, dispatch}, listId) {
+    changeList ({ commit, dispatch }, listId) {
       commit('CHANGE_ACTIVE_LIST', listId);
       dispatch('updateStorage');
     },
 
-    changeListTitle({commit, dispatch}, title) {
+    changeListTitle ({ commit, dispatch, rootState }, title) {
+      const listId = rootState.currentList;
       commit('CHANGE_LIST_TITLE', title);
+      dispatch('updateTimestamp', listId);
       dispatch('updateStorage');
+    },
+
+    updateTimestamp ({ commit }, listId) {
+      const timestamp = new Date().getTime();
+      commit('UPDATE_TIMESTAMP', { listId, timestamp });
     }
   },
   getters: {
@@ -226,10 +254,9 @@ const INITIAL_STATE = {
           id: hash()
         }
       ],
-      timestamp: {
-        created: 1569452509,
-        updated: 1570402909
-      }
+      created: new Date().getTime(),
+      updated: new Date().getTime()
+      
     }
   }
 };

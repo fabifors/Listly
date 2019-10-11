@@ -114,11 +114,11 @@
           <footer class="todo-list__footer">
             <div class="todo-list__footer__left">
               <span class="todo-list__footer__label">created</span>
-              <span class="todo-list__footer__date">yesterday</span>
+              <span class="todo-list__footer__date">{{ list.created | fromToday }}</span>
             </div>
             <div class="todo-list__footer__right">
               <span class="todo-list__footer__label">edited</span>
-              <span class="todo-list__footer__date">1 hour ago</span>
+              <span class="todo-list__footer__date">{{ list.updated | fromToday }}</span>
             </div>
           </footer>
         </article>
@@ -130,6 +130,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import handleResize from '@/mixins/handleResize';
+
 
 export default {
   name: 'Lists',

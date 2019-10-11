@@ -9,9 +9,10 @@
         class="handle fas fa-grip-vertical"
       />
       <input
-        v-model="todo.done" 
+        :value="todo.done"
         type="checkbox" 
         :class="`todos__item__content__done ${dragging ? 'no-transition': null}`"
+        @click="markDone(todo)"
       >
     </div>
     <div
@@ -121,8 +122,11 @@ export default {
         const listId = this.listId;
         this.$store.dispatch('markDone', { todo, listId });
       }
-    }
-  }
+    },
+    log (value) {
+      console.log(value)
+    }  
+ }
 };
 </script>
 
