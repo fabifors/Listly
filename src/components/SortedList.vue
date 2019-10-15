@@ -1,19 +1,19 @@
 <template>
-  <div class="todos">
+  <section class="sorted-list">
     <slot />
-  </div>
+  </section>
 </template>
 
 <script>
 import { ContainerMixin } from 'vue-slicksort';
 export default {
   name: 'SortedList',
-  mixins: [ContainerMixin]
+  mixins: [ ContainerMixin ]
 };
 </script>
 
 <style lang="scss">
-.todos ul {
+.sorted-list ul {
   padding: 0;
   list-style: none;
 }

@@ -47,7 +47,10 @@
       </ul>
     </section>
     
-    <main class="list-section">
+    <main
+      v-if="filteredList"
+      class="list-section"
+    >
       <aside class="list-section__info">
         <div class="list-section__info__left">
           <h4 class="active-filter-label">
@@ -73,68 +76,63 @@
         </div>
         <div class="list-section__info__right">
           <h4 class="active-filter-label">
-            <span class="desktop-only">Number of </span>lists
+            <span class="desktop-only active-filter-label__inner-span">Number of</span> lists
           </h4>
           <span class="active-filter-total">
             {{ numberOfLists }}
           </span>
         </div>
       </aside>
-      <section class="list-section__lists-container">
-        <article
-          v-for="list in lists"
-          :key="list.id" 
-          class="todo-list"
+      <sorted-list 
+        v-if="lists"
+        v-model="handleDrag.sortedTodos"
+        class="list-section__lists-container"
+        :class="{'dragging': handleDrag.bool}"
+        :use-drag-handle="true"
+        :axis="'xy'"
+        @sort-start="dragStart($event, filteredList)"
+        @sort-end="sortEnd()"
+        @input="reorder($event, 'lists')"
+      >
+        <transition-group
+          tag="ul"
+          name="animation"
         >
-          <header
-            class="todo-list__header"
-            @click="openList(list.id)"
-          >
-            <h4 class="todo-list__header__title">
-              {{ list.title }}
-            </h4>
-            <span class="todo-list__header__category"> 
-              {{ list.category ? categories[list.category].name: 'No category' }}
-            </span>
-          </header>
-          <ul class="todo-list__summary">
-            <li 
-              v-for="todo in getFirstFiveTodos(list.id)"
-              :key="todo.id"
-              :class="`todo-list__summary__item ${todo.done ? 'marked-done' : null}`" 
-            >
-              <input
-                class="todo-list__summary__item__checkbox"
-                type="checkbox"
-                @click="markAsDone(todo, list.id)"
-              >
-              <span class="todo-list__summary__item__content">{{ todo.content }}</span>
-            </li>
-          </ul>
-          <footer class="todo-list__footer">
-            <div class="todo-list__footer__left">
-              <span class="todo-list__footer__label">created</span>
-              <span class="todo-list__footer__date">{{ list.created | fromToday }}</span>
-            </div>
-            <div class="todo-list__footer__right">
-              <span class="todo-list__footer__label">edited</span>
-              <span class="todo-list__footer__date">{{ list.updated | fromToday }}</span>
-            </div>
-          </footer>
-        </article>
-      </section>
+          <list
+            v-for="(list, index) in filteredList"
+            :key="list.id"
+            :index="parseInt(index)"
+            :list="list"
+            :dragging="handleDrag.bool"
+          />
+        </transition-group>
+      </sorted-list>
     </main>
+    <new-list />
   </section>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
-import handleResize from '@/mixins/handleResize';
 
+// Mixins
+import handleResize from '@/mixins/handleResize';
+import handleDragging from '@/mixins/handleDragging';
+import { ElementMixin } from 'vue-slicksort';
+
+// Components
+import SortedList from '@/components/SortedList';
+import ListComponent from '@/components/Lists/List';
+import NewList from '../components/Lists/NewList';
 
 export default {
   name: 'Lists',
-  mixins: [handleResize],
+  components: {
+    'sorted-list': SortedList,
+    'list': ListComponent,
+    'new-list': NewList
+  },
+  mixins: [handleResize, handleDragging],
   data: () => {
     return {
       search: '',
@@ -148,7 +146,8 @@ export default {
     }),
 
     filteredList () {
-      return [];
+      const listArray = Object.keys(this.lists).map(id => this.lists[id]);
+      return this.$options.filters.listCategory(listArray, this.activeFilters);
     },
 
     numberOfLists () {
@@ -156,11 +155,6 @@ export default {
     }
   },
   methods: {
-    openList(id) {
-      this.$store.dispatch('changeList', id);
-      this.$router.replace('/');
-    },
-
     addNewList() {
       this.$store.dispatch('addList', newList.title);
       this.$router.replace('/');
@@ -170,7 +164,6 @@ export default {
       const index = this.activeFilters.indexOf(cat);
       if (index != -1) {
         this.activeFilters.splice(index, 1);
-        console.log('Yay it ran');
         return;
       }
 
@@ -183,20 +176,6 @@ export default {
 
     filterListOnSearch () {
       // Write search algoritm
-    },
-
-    getFirstFiveTodos (listId) {
-      if (this.lists) {
-        const list = this.lists[listId];
-        const todos = [...list.todos].sort((a, b) => a.done - b.done);
-        if (todos.length > 5) {
-          todos.length = 5;
-        }
-        return todos;
-      }
-    },
-    markAsDone (todo, listId) {
-      this.$store.dispatch('markDone', { todo, listId});
     }
   }
 };
@@ -329,6 +308,10 @@ export default {
       letter-spacing: 0.5px;
       margin-right: 0.5rem;
 
+      &__inner-span {
+        display: inline;
+      }
+
       @media screen and (min-width: 500px) {
         margin-right: 1rem;
         font-size: 0.85em;
@@ -392,109 +375,37 @@ export default {
 
   }
   &__lists-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    grid-gap: 0.75rem 0.75rem;
-    
-    .todo-list {
-      padding: 0.75rem 1.2rem;
-      background: var(--background-color-light);
-      border-radius: 5px;
-      display: flex;
-      flex-direction: column;
-
-      &__header {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        margin-bottom: 0.4rem;
-        &__title {
-          margin-top: 0.5em;
-          margin-bottom: 0.5em;
-          flex-grow: 2;
-          text-transform: uppercase;
-          font-weight: 800;
-        }
-        &__category {
-          text-transform: uppercase;
-          font-weight: 800;
-          font-size: 0.75em;
-          color: var(--text-color-medium-lighter);
-        }
+    ul {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-gap: 0.75rem 0.75rem;
+    }
+    .animation {      
+      position: relative;
+      &-enter {
+        opacity: 0;
+        transform: scale(0.4, 0.4);
       }
-
-      &__summary {
-        flex-grow: 2;
-        list-style: none;
-        padding: 0;
-        margin-bottom: 1.25rem;
-        &__item {
-          padding: 0.1rem;
-
-          &__checkbox {
-            position: relative;
-            margin-right: 0.75rem;
-            outline: none;
-            &::before {
-              content: '';
-              display: block;
-              position: absolute;
-              border-radius: 5px;
-              left: 0;
-              right: 0;
-              height: 100%;
-              width: 100%;
-              background: var(--background-color-light);
-              border: 2px solid var(--text-color-medium);
-              transition: background 100ms ease-in;
-            }
-          }
-          &.marked-done {
-            .todo-list__summary__item {
-              &__content {
-                text-decoration: line-through;
-                color: var(--text-color-dark--muted);
-              }
-              &__checkbox {
-                &::before {
-                  background: var(--text-color-medium);
-                }
-              }
-            }
-            
-          }
-          &__content {
-            font-weight: 600;
-          }
-          &:not(:last-child) {
-          margin-bottom: 1rem;
-          }
-        }
+      &-leave-to {
+        opacity: 0;
+        transform: scale(0.4, 0.4);
       }
-      &__footer {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        &__left,
-        &__right {
-          display: flex;
-          flex-direction: column;
-          font-size: 0.75em;
-        }
-        &__left {
-          align-items: flex-start;
-        }
-        &__right {
-          align-items: flex-end;
-        }
-        &__date {
-          font-weight: 600;
-        }
+      &-enter-active {
+        transition: 0.35s all;
+        opacity: 1;
+      }
+      &-leave-active {
+        transition: all 0.35s;
+        position: absolute;
+        width: 100%;
+      }
+      &-move {
+        transition: transform 0.5s;
+      }
+      &-move .dragging {
+        transition: none;
       }
     }
   }
-
 }
-
 </style>

@@ -59,8 +59,6 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-import { setTimeout } from 'timers';
 import { ElementMixin, HandleDirective } from 'vue-slicksort';
 
 export default {
@@ -124,7 +122,7 @@ export default {
       }
     },
     log (value) {
-      console.log(value)
+      console.log(value);
     }  
  }
 };

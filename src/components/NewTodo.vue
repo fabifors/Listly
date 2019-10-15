@@ -3,7 +3,8 @@
     <header v-if="listTitle">
       <h2
         v-if="!title.editing"
-        class="new-todo__heading" @click="editTitle()"
+        class="new-todo__heading" 
+        @click="editTitle()"
       >
         {{ listTitle }}
       </h2>
@@ -115,12 +116,13 @@ export default {
       color: var(--text-color-dark);
       font-weight: bold;
       padding: 0;
+      margin-bottom: 1.5rem;
     }
   }
 
   &__heading {
     font-size: 3em;
-    margin: 0 0 1.5rem;
+    margin-bottom: 1.5rem;
     color: var(--text-color-dark);
   }
 

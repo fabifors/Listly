@@ -35,6 +35,8 @@ export default {
 
   --text-color-muted--light: hsla(251, 13%, 52%, 0.5);
   --text-color-muted--medium: hsla(251, 13%, 52%, 0.8);
+
+  --box-shadow: hsla(251, 28%, 27%, 0.16);
 }
 
 * {
@@ -44,8 +46,8 @@ export default {
   padding: 0;
 }
 
-input:focus {
-  outline: 2px dashed var(--white-color);
+input[type="text"]:focus{
+  outline: 2px dashed var(--background-color);
   outline-offset: 2px;
 }
 
@@ -64,7 +66,6 @@ body { margin: 0;}
 .main-wrapper {
   max-width: 950px;
   margin: 0 auto;
-  position: relative;
 }
 
 .desktop-only {

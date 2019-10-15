@@ -12,12 +12,12 @@
     </aside>
     <sorted-list
       v-if="currentList"
-      v-model="sortedTodos"
+      v-model="handleDrag.sortedTodos"
+      :class="{'dragging': handleDrag.bool}"
       :use-drag-handle="true"
-      :class="{'dragging': dragging}"
-      @sort-start="dragStart($event)"
+      @sort-start="dragStart($event, currentList.todos)"
       @sort-end="sortEnd()"
-      @input="reorder($event)"
+      @input="reorder($event, 'todos', currentList.id)"
     >
       <transition-group 
         name="animation" 
@@ -29,7 +29,7 @@
           :index="parseInt(index)"
           :todo="todo"
           :list-id="currentList.id"
-          :dragging="dragging"
+          :dragging="handleDrag.bool"
         />
       </transition-group>
     </sorted-list>
@@ -37,10 +37,15 @@
 </template>
 
 <script>
-import Todo from './Todo';
+// From libraries
 import { mapGetters, mapState } from 'vuex';
+
+// Components
+import Todo from './Todo';
 import SortedList from './SortedList';
-import { setTimeout } from 'timers';
+
+//Mixins
+import handleDragging from'@/mixins/handleDragging';
 
 export default {
   name: 'TodoList',
@@ -48,29 +53,9 @@ export default {
     'sorted-list': SortedList,
     'to-do': Todo
   },
-  data: () => {
-    return {
-      sortedTodos: [],
-      dragging: false
-    };
-  },
+  mixins: [handleDragging],
   computed: {
     ...mapGetters({ currentList: 'getCurrentList' })
-  },
-  methods: {
-    dragStart(e) {
-      this.sortedTodos = Array.from(this.currentList.todos);
-    },
-    sortEnd() {
-      this.dragging = true;
-    },
-    reorder(list) {
-      const listId = this.currentList.id;
-      this.$store.dispatch('reorderTodos', { list, listId });
-      setTimeout(() => {
-        this.dragging = false;
-      }, 10);
-    }
   }
 };
 </script>

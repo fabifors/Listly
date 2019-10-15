@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import router from './router';
 
 import { hash } from './functions';
 
@@ -21,15 +22,13 @@ export default new Vuex.Store({
     
     /* Todo mutations */
     ADD_TODO (state, { todo, listId }) {
-      const timestamp = Date.now();
       const todos = state.lists[listId].todos;
+      const id = hash();
       todos.unshift({
         content: todo,
         done: false,
         editing: false,
-        id: hash(),
-        created: timestamp,
-        edited: timestamp
+        id: id,
       });
     },
 
@@ -78,16 +77,16 @@ export default new Vuex.Store({
       delete state.lists[list];
     },
 
-    UPDATE_LIST_TODOS (state, update) {
-      state.lists.find(list => list.id === update.id).todos = update.todos;
-    },
-
     CHANGE_ACTIVE_LIST (state, list_ID) {
       state.currentList = list_ID;
     },
 
     CHANGE_LIST_TITLE (state, { title, listId }) {
       state.lists[listId].title = title;
+    },
+
+    REPLACE_LISTS (state, lists) {
+      state.lists = lists;
     },
 
     UPDATE_TIMESTAMP (state, {listId, timestamp}) {
@@ -110,7 +109,7 @@ export default new Vuex.Store({
 
       // Maybe relocate user to list view if no current list is selected on boot.
       if (!rootState.currentList) {
-        this.$router.replace('/lists');
+        router.push('/lists');
       }
     },
 
@@ -152,7 +151,6 @@ export default new Vuex.Store({
 
     reorderTodos ({ commit, dispatch }, { list, listId }) {
       commit('REPLACE_TODOS', { list, listId });
-      dispatch('updateTimestamp', listId);
       dispatch('updateStorage');
     },
 
@@ -180,6 +178,11 @@ export default new Vuex.Store({
     updateTimestamp ({ commit }, listId) {
       const timestamp = new Date().getTime();
       commit('UPDATE_TIMESTAMP', { listId, timestamp });
+    },
+
+    reorderLists ({ commit, dispatch }, lists) {
+      commit('REPLACE_LISTS', lists);
+      dispatch('updateStorage');
     }
   },
   getters: {
@@ -204,7 +207,6 @@ export default new Vuex.Store({
       }
     },
     getAllListCategories: state => {
-      console.log(state);
       return state.categories;
     }
   }
@@ -221,6 +223,11 @@ const INITIAL_STATE = {
       id: 'kas2d-ad-a2d-a2d-2ad',
       name: 'Daily',
       lists: ['as2-asd2-asd3-k2-asd2']
+    },
+    'kas2d-ad-a2d-a2d-2ae': {
+      id: 'kas2d-ad-a2d-a2d-2ae',
+      name: 'Lök',
+      lists: ['as2-asd2-asd3-k2-asd4']
     }
   },
   lists: {
@@ -256,7 +263,72 @@ const INITIAL_STATE = {
       ],
       created: new Date().getTime(),
       updated: new Date().getTime()
-      
+    },
+    'as2-asd2-asd3-k2-asd4': {
+      id: 'as2-asd2-asd3-k2-asd4',
+      title: 'An Awesome List',
+      category: 'kas2d-ad-a2d-a2d-2ae',
+      todos: [
+        {
+          content: 'Code like a monkey',
+          done: false,
+          editing: false,
+          id: hash()
+        }, 
+        {
+          content: 'Pet the cat',
+          done: false,
+          editing: false,
+          id: hash()
+        },
+        {
+          content: 'Take a dump',
+          done: false,
+          editing: false,
+          id: hash()
+        },
+        { 
+          content: 'Make something useless',
+          done: true,
+          editing: false,
+          id: hash()
+        }
+      ],
+      created: new Date().getTime(),
+      updated: new Date().getTime()
+    },
+    'as2-asd2-asd3-k2-asd1': {
+      id: 'as2-asd2-asd3-k2-asd1',
+      title: 'An Awesome List',
+      category: '',
+      todos: [
+        {
+          content: 'Code like a monkey',
+          done: false,
+          editing: false,
+          id: hash()
+        }, 
+        {
+          content: 'Pet the cat',
+          done: false,
+          editing: false,
+          id: hash()
+        },
+        {
+          content: 'Take a dump',
+          done: false,
+          editing: false,
+          id: hash()
+        },
+        { 
+          content: 'Make something useless',
+          done: true,
+          editing: false,
+          id: hash()
+        }
+      ],
+      created: new Date().getTime(),
+      updated: new Date().getTime()
     }
   }
 };
