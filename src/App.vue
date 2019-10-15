@@ -63,6 +63,10 @@ body { margin: 0;}
   overflow: hidden;
 }
 
+#app *:not(i) {
+  font-family: 'Proxima Nova', Helvetica, Arial, sans-serif;
+}
+
 .main-wrapper {
   max-width: 950px;
   margin: 0 auto;

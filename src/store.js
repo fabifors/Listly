@@ -59,13 +59,14 @@ export default new Vuex.Store({
     },
 
     /* List Mutation */
-    ADD_LIST (state, id) {
+    ADD_LIST (state, { listId, title, catId }) {
       const timestamp = Date.now();
       state.lists = {
         ...state.lists,
-        [id]: {
-          title: 'List title',
-          id,
+        [listId]: {
+          title: title,
+          id: listId,
+          category: catId,
           todos: [],
           created: timestamp,
           updated: timestamp
@@ -85,12 +86,42 @@ export default new Vuex.Store({
       state.lists[listId].title = title;
     },
 
+    UPDATE_LIST_CATEGORY (state, { listId, catId }) {
+      state.lists[listId].category = catId;
+    },
+
     REPLACE_LISTS (state, lists) {
       state.lists = lists;
     },
 
-    UPDATE_TIMESTAMP (state, {listId, timestamp}) {
+    UPDATE_TIMESTAMP (state, { listId, timestamp }) {
       state.lists[listId].updated = timestamp;
+    },
+
+    // Categories 
+    ADD_CATEGORY (state, { name, catId }) {
+      state.categories[catId] = {
+        id: catId,
+        name,
+        lists: []
+      };
+    },
+
+    ADD_LIST_TO_CATEGORY (state, { listId, catId }) {
+      state.categories[catId].lists.push(listId);
+    },
+
+    REMOVE_LIST_FROM_CATEGORY (state, { listId, catId }) {
+      const index = state.categories[catId].lists.indexOf(listId);
+      state.categories[catId].lists.splice(index, 1);
+    },
+
+    DELETE_CATEGORY (state, id) {
+      delete state.categories[id];
+    },
+
+    UPDATE_CATEGORY_NAME (state, { name, catId }) {
+      state.categories[catId].name = name;
     },
 
     REPLACE_STATE(state, newState) {
@@ -107,7 +138,6 @@ export default new Vuex.Store({
         commit('REPLACE_STATE', INITIAL_STATE);
       }
 
-      // Maybe relocate user to list view if no current list is selected on boot.
       if (!rootState.currentList) {
         router.push('/lists');
       }
@@ -156,11 +186,21 @@ export default new Vuex.Store({
 
     /* List Actions */
 
-    addList ({ commit, dispatch }, title) {
-      const id = hash();
-      commit('ADD_LIST', {title, id});
+    addList ({ commit, dispatch }, { title, cat }) {
+      const listId = hash();
+      if (!cat.name) {
+        commit('ADD_LIST', { title, listId, cat: '' });
+      } 
+      if (!cat.id) {
+        const catId = hash();
+        dispatch('addNewCategory', { name: cat.name, catId, listId });
+        commit('ADD_LIST', {title, listId, cat: catId});
+      } else {
+        commit('ADD_LIST', { title, listId, catId: cat.id });
+        commit('ADD_LIST_TO_CATEGORY', { catId: cat.id, listId });
+      }
       dispatch('updateStorage');
-      commit('CHANGE_ACTIVE_LIST', id);
+      commit('CHANGE_ACTIVE_LIST', listId);
     },
 
     changeList ({ commit, dispatch }, listId) {
@@ -182,6 +222,25 @@ export default new Vuex.Store({
 
     reorderLists ({ commit, dispatch }, lists) {
       commit('REPLACE_LISTS', lists);
+      dispatch('updateStorage');
+    },
+
+    // Categories
+    async addNewCategory ({ commit, dispatch }, { name, catId, listId }) {
+      await commit('ADD_CATEGORY', { catId, name});
+      commit('ADD_LIST_TO_CATEGORY', { catId, listId });
+      commit('UPDATE_LIST_CATEGORY', { catId, listId });
+      dispatch('updateStorage');
+    },
+
+    removeListFromCategory ({ commit, dispatch }, { catId, listId }) {
+      commit('REMOVE_LIST_FROM_CATEGORY', { catId, listId });
+      commit('UPDATE_LIST_CATEGORY', { listId, catId: '' });
+      dispatch('updateStorage');
+    },
+
+    updateCategoryName ({ commit, dispatch }, { catId, name }) {
+      commit('UPDATE_CATEGORY_NAME', { catId, name });
       dispatch('updateStorage');
     }
   },
