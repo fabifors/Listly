@@ -1,61 +1,73 @@
 <template>
   <div class="new-list">
-    <div :class="`popup-wrapper ${popup ? 'popup-wrapper--open': ''}`">
-      <form class="popup">
-        <h2 class="popup__title">
-          Create new list
-        </h2>
-        <div class="popup__input-group">
-          <label
-            for="title"
-            class="popup__label"
-          >title</label>
-          <input
-            v-model="title"
-            placeholder="My list"
-            class="popup__input"
-          >
-        </div>
-        <div class="popup__input-group">
-          <label
-            for="title"
-            class="popup__label"
-          >category</label>
-          <div class="popup__input-wrapper">
-            <i class="fad fa-tags input-icon" />
+    <transition name="fade">
+      <div
+        v-if="popup"
+        class="new-list__overlay" @click="popup = !popup"
+      />
+    </transition>
+    <transition name="slide-up">
+      <div
+        v-if="popup"
+        class="popup-wrapper"
+      >
+        <form class="popup">
+          <h2 class="popup__title">
+            Create new list
+          </h2>
+          <div class="popup__input-group">
+            <label
+              for="title"
+              class="popup__label"
+            >title</label>
             <input
-              v-model="categoryPicker.category.name"
-              placeholder="Choose or create"
-              class="popup__input popup__input--with-icon"
+              v-model="title"
+              placeholder="My list"
+              class="popup__input"
             >
-            <i 
-              :class="`fad fa-caret-down input-dropdown-icon ${categoryPicker.open ? 'input-dropdown-icon--active' : ''}`"
-              @click="handleOpenCategories"
-            />
           </div>
-          <ul
-            v-if="categoryPicker.open"
-            class="category-picker"
-          >
-            <li 
-              v-for="category in filteredCategories"
-              :key="category.id"
-              class="category-picker__item"
-              @click="chooseCategory({cat: {name: category.name, id: category.id}})"
+          <div class="popup__input-group">
+            <label
+              for="title"
+              class="popup__label"
+            >category</label>
+            <div class="popup__input-wrapper">
+              <i class="fad fa-tags input-icon" />
+              <input
+                v-model="categoryPicker.category.name"
+                placeholder="Choose or create"
+                class="popup__input popup__input--with-icon"
+              >
+              <i 
+                :class="`fad fa-caret-down input-dropdown-icon ${categoryPicker.open ? 'input-dropdown-icon--active' : ''}`"
+                @click="handleOpenCategories"
+              />
+            </div>
+            <transition-group
+              v-if="categoryPicker.open"
+              name="expand-group"
+              tag="ul"
+              class="category-picker"
             >
-              {{ category.name }}
-            </li>
-          </ul>
-        </div>
-        <button
-          class="popup__button"
-          @click="createNewList()"
-        >
-          Create List
-        </button>
-      </form>
-    </div>
-
+              <li 
+                v-for="category in filteredCategories"
+                :key="category.id"
+                class="category-picker__item"
+                @click="chooseCategory({cat: {name: category.name, id: category.id}})"
+              >
+                {{ category.name }}
+              </li>
+            </transition-group>
+          </div>
+          <button
+            class="popup__button"
+            @click="createNewList()"
+          >
+            Create List
+          </button>
+        </form>
+      </div>
+    </transition>
     <button
       :class="`new-list__btn ${popup ? 'new-list__btn--active' : ''}`"
       @click.prevent="handleOpenPopup"
@@ -132,12 +144,59 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.expand-group {
+  &-enter-active, &-leave-active {
+    transition: transform 500ms ease, opacity 200ms ease;
+  }
+
+  &-leave-active &-move{
+    position: absolute;
+  }
+
+  &-enter, &-leave-to {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+
+  &-move {
+    transition: transform 500ms ease;
+  }
+}
+
+.fade {
+  &-enter-active, &-leave-active {
+    transition: opacity 200ms ease-in;
+  }
+  &-enter, &-leave-to {
+    opacity: 0;
+  }
+}
+
+.slide-up {
+  &-enter-active, &-leave-active{
+    transition: transform 0.3s ease-in, opacity 0.3s ease-in;
+  }
+
+  &-enter, &-leave-to {
+    opacity: 0;
+    transform: translateY(50%) scale(1);
+  }
+}
+
 .new-list {
-  
+  &__overlay {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(0,0,0,0.5);
+  }
   &__btn {
     position: fixed;
-    bottom: 5%;
-    right: 10%;
+    bottom: 2rem;
+    right: 2rem;
     border: none;
     background: var(--background-color);
     border-radius: 50%;
@@ -146,6 +205,11 @@ export default {
     box-shadow: 0 10px 15px var(--box-shadow);
     color: var(--text-color);
     transition: transform 0.1s ease, box-shadow 0.2s ease;
+
+    @media screen and (min-width: 500px) {
+      bottom: 5%;
+      right:13%;
+    }
 
     &:focus {
       outline: none;
@@ -156,20 +220,22 @@ export default {
     }
   }
   .popup-wrapper {
-    bottom: 10%;
-    right: 13%;
+    width: calc(100% - 2rem);
+    height: calc(100vh - 6.75rem);
+    top: 3.5rem;
+    right: 1rem;    
     position: fixed;
-    
-    opacity: 0;
-    transform: translateY(200%) translateZ(0) scale(0);
-    transition: transform 0.3s ease-in, opacity 0.2s ease, box-shadow 0.1s ease-in 0.1s;
-    box-shadow: 0px 0px 0px var(--box-shadow);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
     border-radius: 5px;
 
-    &--open {
-      opacity: 1;
-      transform: translateY(0%) scale(1);
-      box-shadow: 6px 8px 10px var(--box-shadow);
+    @media screen and (min-width: 500px) {
+      width: 750px;
+      bottom: 10%;
+      right: 0;
+      left: 0;
+      margin: 0 auto;
     }
 
     .popup{
@@ -180,13 +246,14 @@ export default {
       border-radius: 5px;
       border-left: 1px solid var(--white-color);
       border-top: 1px solid var(--white-color);
-
+      box-shadow: 6px 8px 10px var(--box-shadow);
+      
       &__title {
-        font-size: 1.1em;
+        font-size: 1.2em;
         color: var(--text-color-dark);
         text-transform: uppercase;
         font-weight: 800;
-        margin-bottom: 0.5rem
+        margin-bottom: 0.75rem;
       }
       &__input-group {
         min-width: 250px;
@@ -208,15 +275,15 @@ export default {
       .input-icon {
         position: absolute;
         left: 0.75rem;
-        top: 0.7rem;
-        font-size: 0.75em;
+        top: 0.85rem;
+        font-size: 0.9em;
       }
       .input-dropdown-icon {
         position: absolute;
         right: 0;
         top: 0;
-        padding: 0.65rem 0.65rem 0.5rem;
-        font-size: 1em;
+        padding: 0.75rem 0.75rem 0.6rem;
+        font-size: 1.2em;
         transition: transform 0.2s ease;
         &--active {
           transform: rotate(180deg);
@@ -226,16 +293,16 @@ export default {
       &__input {
         width: 100%;
         font-family: 'Proxima Nova';
-        font-size: 0.9em;
+        font-size: 1em;
         border-radius: 5px;
         background: var(--white-color);
         border: none;
         color: var(--text-color-dark);
         font-weight: bold;
-        padding: 0.5rem 0.75rem;
+        padding: 0.65rem 0.9rem;
 
         &--with-icon {
-          padding-left: 2.2rem;
+          padding-left: 2.4rem;
         }
         &::placeholder{
           color: var(--text-color-medium-lighter);
@@ -261,9 +328,19 @@ export default {
         padding: 0.5rem 0.7rem;
         font-weight: 600;
         color: var(--text-color-dark);
+        font-size: 1em;
 
         &:hover {
           opacity: 0.8;
+        }
+      }
+      @media screen and (min-width: 500px) {
+        &__title {
+          font-size: 1.5em;
+          margin-bottom: 1rem;
+        }
+        &__input-group {
+          margin-bottom: 1rem;
         }
       }
     }
