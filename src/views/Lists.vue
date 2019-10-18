@@ -267,10 +267,12 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
+    flex-wrap: wrap;
     padding: 0;
     .filter-tag {
       list-style: none;
       margin-right: 0.75rem;
+      margin-bottom: 0.5rem;
       font-weight: 600;
       padding: 0.4rem 0.6rem;
       border-radius: 5px;
@@ -329,6 +331,7 @@ export default {
         margin: 0;
         list-style: none;
         display: flex;
+        flex-wrap: wrap;
         flex-direction: row;
         &__item {
           font-weight: 800;
@@ -382,11 +385,7 @@ export default {
     }
     .animation {      
       position: relative;
-      &-enter {
-        opacity: 0;
-        transform: scale(0.4, 0.4);
-      }
-      &-leave-to {
+      &-enter, &-leave-to {
         opacity: 0;
         transform: scale(0.4, 0.4);
       }

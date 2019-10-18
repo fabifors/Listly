@@ -111,6 +111,7 @@ export default {
       display: inline-block;
       padding: 0.15em 0.4em;
       margin-right: 0.4rem;
+      margin-left: -0.4em;
       pointer-events: all;
     }
 
