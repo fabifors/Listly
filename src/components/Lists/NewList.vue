@@ -146,6 +146,7 @@ export default {
 <style lang="scss" scoped>
 
 .expand-group {
+  position: relative;
   &-enter-active, &-leave-active {
     transition: transform 500ms ease, opacity 200ms ease;
   }

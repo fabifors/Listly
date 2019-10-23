@@ -95,8 +95,11 @@
         @input="reorder($event, 'lists')"
       >
         <transition-group
+          v-if="filteredList"
           tag="ul"
           name="animation"
+          mode="out-in"
+          appear
         >
           <list
             v-for="(list, index) in filteredList"
@@ -378,25 +381,37 @@ export default {
 
   }
   &__lists-container {
+    overflow: hidden;
+    min-height: 50vh;
+    width: 100%;
     ul {
+      width: 100%;
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       grid-gap: 0.75rem 0.75rem;
     }
-    .animation {      
+    .animation {
       position: relative;
-      &-enter, &-leave-to {
+      width: 100%;
+      &-enter {
         opacity: 0;
-        transform: scale(0.4, 0.4);
+        transform: scale(0.4);
+      }
+      &-leave-to {
+        opacity: 0;
+        transform: scale(0.4);
       }
       &-enter-active {
-        transition: 0.35s all;
+        transition: transform 0.35s ease, opacity 0.35s ease;
         opacity: 1;
       }
       &-leave-active {
-        transition: all 0.35s;
+        transition: transform 0.35s ease, opacity 0.35s ease;
         position: absolute;
-        width: 100%;
+      }
+      &-leave {
+        opacity: 0;
+        transform: scale(0.4);
       }
       &-move {
         transition: transform 0.5s;
