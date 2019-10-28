@@ -161,7 +161,7 @@ export default {
   }
 
   &-move {
-    transition: transform 500ms ease;
+    transition: all 500ms ease;
   }
 }
 

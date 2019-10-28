@@ -100,6 +100,7 @@
           name="animation"
           mode="out-in"
           appear
+          @before-leave="beforeLeave(el)"
         >
           <list
             v-for="(list, index) in filteredList"
@@ -161,6 +162,14 @@ export default {
     addNewList() {
       this.$store.dispatch('addList', newList.title);
       this.$router.replace('/');
+    },
+
+    beforeLeave(el) {
+      const {marginLeft, marginTop, width, height} = window.getComputedStyle(el);
+      el.style.left = `${el.offsetLeft - parseFloat(marginLeft, 10)}px`;
+      el.style.top = `${el.offsetTop - parseFloat(marginTop, 10)}px`;
+      el.style.width = width;
+      el.style.height = height;
     },
 
     activate(cat) {
@@ -381,7 +390,6 @@ export default {
 
   }
   &__lists-container {
-    overflow: hidden;
     min-height: 50vh;
     width: 100%;
     ul {
@@ -389,33 +397,27 @@ export default {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       grid-gap: 0.75rem 0.75rem;
+      position: relative;
     }
     .animation {
-      position: relative;
-      width: 100%;
-      &-enter {
+      &-enter{
         opacity: 0;
         transform: scale(0.4);
       }
-      &-leave-to {
-        opacity: 0;
-        transform: scale(0.4);
-      }
-      &-enter-active {
+
+      &-enter-active{
         transition: transform 0.35s ease, opacity 0.35s ease;
-        opacity: 1;
       }
+
       &-leave-active {
-        transition: transform 0.35s ease, opacity 0.35s ease;
         position: absolute;
-      }
-      &-leave {
         opacity: 0;
-        transform: scale(0.4);
       }
+
       &-move {
-        transition: transform 0.5s;
+        transition: transform 0.35s ease;
       }
+
       &-move .dragging {
         transition: none;
       }

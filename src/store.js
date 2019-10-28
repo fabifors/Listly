@@ -203,6 +203,12 @@ export default new Vuex.Store({
       commit('CHANGE_ACTIVE_LIST', listId);
     },
 
+    removeList ({ commit, dispatch }, listId) {
+      commit('REMOVE_LIST', listId);
+      commit('CHANGE_ACTIVE_LIST', '');
+      dispatch('updateStorage');
+    },
+
     changeList ({ commit, dispatch }, listId) {
       commit('CHANGE_ACTIVE_LIST', listId);
       dispatch('updateStorage');
@@ -267,6 +273,14 @@ export default new Vuex.Store({
     },
     getAllListCategories: state => {
       return state.categories;
+    },
+    getListCategory: state => listId => {
+      const categoryID = Object.keys(state.categories).filter(cat => state.categories[cat].lists.includes(listId));
+      if(categoryID) {
+        return state.categories[categoryID];
+      } else {
+        return false;
+      }
     }
   }
 });

@@ -11,7 +11,8 @@
       <input
         :value="todo.done"
         type="checkbox" 
-        :class="`todos__item__content__done ${dragging ? 'no-transition': null}`"
+        class="todos__item__content__done"
+        :class="{ 'no-transition': dragging }"
         @click="markDone(todo)"
       >
     </div>
@@ -158,7 +159,7 @@ export default {
     padding: 0.70rem 0.25rem 0.7rem;
 
     &__text {
-      line-height: 1.4em;
+      line-height: 1.3em;
       font-weight: 600;
       flex-grow: 2;
     }
@@ -175,7 +176,7 @@ export default {
       font-size: 1em;
       font-family: "Proxima Nova";
       font-weight: 600;
-      line-height: 1.4em;
+      line-height: 1.3em;
       border: none;
       padding: 0;
       background: none;
@@ -190,6 +191,26 @@ export default {
     i {
       padding: 0.90rem 0.75rem;
       color: var(--text-color-medium);
+      cursor: pointer;
+      &:hover {
+        color: var(--text-color-medium-muted);
+      }
+    }
+
+    .fa-edit {
+      padding-right: 0.75rem;
+      padding-left: 0.5rem;
+      padding-top: 0.85rem;
+      padding-bottom: 0.95rem;
+      font-size: 0.95em;
+    }
+    
+    i.handle {
+      cursor: initial;
+    }
+
+    .fa-times {
+      padding-left: 0.5rem;
     }
     .todos__item__content__done {
       position: relative;
@@ -199,11 +220,11 @@ export default {
       &::before {
         position: absolute;
         display: block;
-        top: -4px;
+        top: -2.5px;
         left: -4px;
         content: "";
-        width: 15px;
-        height: 15px;
+        width: 13px;
+        height: 13px;
         border: 2px solid var(--text-color-medium);
         border-radius: 5px;
         background: var(--background-color-light);
@@ -221,7 +242,7 @@ export default {
 
     .todos__item__content__done::before {
       background: var(--text-color-medium);
-      border-color: var(--background-color-light);
+      border-color: var(--text-color-medium);
     }
   }
 }

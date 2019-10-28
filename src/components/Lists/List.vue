@@ -1,7 +1,7 @@
 <template>
   <article 
     v-if="list"
-    :class="`todo-list ${dragging ? 'no-transition': null}`"
+    :class="`todo-list ${dragging ? 'no-transition': ''}`"
   >
     <header
       class="todo-list__header"
@@ -21,7 +21,7 @@
       <li 
         v-for="todo in getFirstFiveTodos(list)"
         :key="todo.id"
-        :class="`todo-list__summary__item ${todo.done ? 'marked-done' : null}`" 
+        :class="`todo-list__summary__item ${todo.done ? 'marked-done' : ''}`" 
       >
         <input
           class="todo-list__summary__item__checkbox"
@@ -86,8 +86,8 @@ export default {
         return list.todos;
       }
     },
-    openList(id) {
-      this.$store.dispatch('changeList', id);
+    async openList(id) {
+      await this.$store.dispatch('changeList', id);
       this.$router.replace('/');
     },
   }
@@ -128,7 +128,6 @@ export default {
         font-weight: 800;
       }
       &__category {
-        text-transform: uppercase;
         font-weight: 800;
         font-size: 0.75em;
         color: var(--text-color-medium-lighter);

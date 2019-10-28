@@ -41,8 +41,8 @@
 import { mapGetters, mapState } from 'vuex';
 
 // Components
-import Todo from './Todo';
-import SortedList from './SortedList';
+import Todo from '@/components/Todos/Todo';
+import SortedList from '@/components/SortedList';
 
 //Mixins
 import handleDragging from'@/mixins/handleDragging';

@@ -59,7 +59,7 @@ body { margin: 0;}
   -moz-osx-font-smoothing: grayscale;
   color: var(--text-color-dark);
   min-height: 100vh;
-  padding-bottom: 5rem;
+  // padding-bottom: 5rem;
   overflow: hidden;
 }
 
