@@ -3,7 +3,7 @@ import Router from 'vue-router';
 import Todos from '../views/Todos';
 import Lists from '../views/Lists';
 import Settings from '../views/Settings';
-import store from '@/store.js';
+import store from '@/store/index.js';
 
 Vue.use(Router);
 
@@ -14,7 +14,8 @@ export default new Router({
       name: 'Todos',
       component: Todos,
       beforeEnter(to, from, next) {
-        if(!store.state.currentList) {
+        console.log(store.getters['lists/getAllLists']);
+        if(!store.getters['lists/getCurrentList']) {
           next('/lists');
         } else {
           next();
