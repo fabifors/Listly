@@ -25,11 +25,11 @@ export default {
             acc[item.id] = { ...item };
             return acc;
           }, {});
-          this.$store.dispatch('reorderLists', listObj);
+          this.$store.dispatch('lists/reorderLists', listObj, { root: true });
           break;
         }
         case 'todos': {
-          this.$store.dispatch('reorderTodos', { list, listId });
+          this.$store.dispatch('todos/reorderTodos', { list, listId }, { root: true });
           break;
         }
         default: {
