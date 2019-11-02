@@ -117,6 +117,26 @@ export default {
       ],
       created: new Date().getTime(),
       updated: new Date().getTime()
-    }
+    },
+  },
+  todos: {
+    'adwa-awd-a-2-2d-4': {
+      content: 'This is the to-do',
+      list_id: 'adwa-awd-a-2-2d-',
+      done: false,
+      editing: false
+    },
+    'adwa-awd-a-2-2d-2': {
+      content: 'My man',
+      list_id: 'adwa-awd-a-2-2d-',
+      done: false,
+      editing: false
+    },
+    'adwa-awd-a-2-2d-1': {
+      content: 'Woohooo',
+      list_id: 'adwa-awd-a-2-2d-',
+      done: false,
+      editing: false
+    },
   }
 };
