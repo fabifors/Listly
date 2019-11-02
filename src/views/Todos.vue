@@ -28,7 +28,7 @@ export default {
   'new-todo': NewTodo,
   'todo-meta-information': TodoListMeta
   },
-  computed: {...mapGetters({ list: 'getCurrentList' })}
+  computed: {...mapGetters({ list: 'lists/getCurrentList' })}
 };
 </script>
 

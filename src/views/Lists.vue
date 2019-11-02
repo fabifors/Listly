@@ -96,11 +96,11 @@
       >
         <transition-group
           v-if="filteredList"
-          tag="ul"
+          tag="div"
+          class="list-section__lists-container__inner"
           name="animation"
           mode="out-in"
           appear
-          @before-leave="beforeLeave(el)"
         >
           <list
             v-for="(list, index) in filteredList"
@@ -145,13 +145,17 @@ export default {
   },
   computed: {
     ...mapGetters({
-      lists: 'getAllLists',
-      categories: 'getAllListCategories'
+      lists: 'lists/getAllLists',
+      categories: 'categories/getAllListCategories'
     }),
 
     filteredList () {
-      const listArray = Object.keys(this.lists).map(id => this.lists[id]);
-      return this.$options.filters.listCategory(listArray, this.activeFilters);
+      if(this.lists) {
+        console.log(this.lists)
+        const listArray = Object.keys(this.lists).map(id => this.lists[id]);
+        console.log(listArray)
+        return this.$options.filters.listCategory(listArray, this.activeFilters);
+      }
     },
 
     numberOfLists () {
@@ -159,19 +163,6 @@ export default {
     }
   },
   methods: {
-    addNewList() {
-      this.$store.dispatch('addList', newList.title);
-      this.$router.replace('/');
-    },
-
-    beforeLeave(el) {
-      const {marginLeft, marginTop, width, height} = window.getComputedStyle(el);
-      el.style.left = `${el.offsetLeft - parseFloat(marginLeft, 10)}px`;
-      el.style.top = `${el.offsetTop - parseFloat(marginTop, 10)}px`;
-      el.style.width = width;
-      el.style.height = height;
-    },
-
     activate(cat) {
       const index = this.activeFilters.indexOf(cat);
       if (index != -1) {
@@ -392,7 +383,7 @@ export default {
   &__lists-container {
     min-height: 50vh;
     width: 100%;
-    ul {
+    &__inner {
       width: 100%;
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
