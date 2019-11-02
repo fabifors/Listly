@@ -17,11 +17,12 @@
           </h2>
           <div class="popup__input-group">
             <label
-              for="title"
+              for="newListTitle"
               class="popup__label"
             >title</label>
             <input
               v-model="title"
+              id="newListTitle"
               placeholder="My list"
               class="popup__input"
             >
@@ -33,14 +34,17 @@
             >category</label>
             <div class="popup__input-wrapper">
               <i class="fad fa-tags input-icon" />
+              <label class="sr-only" for="categoryInput">Add list category</label>
               <input
+                id="categoryInput"
                 v-model="categoryPicker.category.name"
+                @change="handleOpenCategories()"
                 placeholder="Choose or create"
                 class="popup__input popup__input--with-icon"
               >
               <i 
                 :class="`fad fa-caret-down input-dropdown-icon ${categoryPicker.open ? 'input-dropdown-icon--active' : ''}`"
-                @click="handleOpenCategories"
+                @click="!categoryPicker.open ? handleOpenCategories() : handleCloseCategories()"
               />
             </div>
             <transition-group
@@ -48,6 +52,7 @@
               name="expand-group"
               tag="ul"
               class="category-picker"
+              appear
             >
               <li 
                 v-for="category in filteredCategories"
@@ -72,6 +77,7 @@
       :class="`new-list__btn ${popup ? 'new-list__btn--active' : ''}`"
       @click.prevent="handleOpenPopup"
     >
+      <span class="sr-only">Create new list</span>
       <i class="fad fa-plus" />
     </button>
   </div>
@@ -98,7 +104,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      categories: 'getAllListCategories'
+      categories: 'categories/getAllListCategories'
     }),
     filteredCategories () {
       return Object.keys(this.categories)
@@ -114,7 +120,7 @@ export default {
       if (!this.categories[this.categoryPicker.category.id]) {
         this.categoryPicker.category.id = '';
       }
-      this.$store.dispatch('addList', { title: this.title, cat: this.categoryPicker.category });
+      this.$store.dispatch('lists/addList', { title: this.title, cat: this.categoryPicker.category }, { root: true });
       this.title = '';
       this.categoryPicker.category = { name: '', id: '' };
       this.popup = false;
@@ -133,7 +139,12 @@ export default {
         this.categoryPicker.open = true;
         return;
       }
-      this.categoryPicker.open = false;
+    },
+    handleCloseCategories () {
+      if (this.categoryPicker.open) {
+        this.categoryPicker.open = false;
+        return;
+      }
     },
     chooseCategory ({cat}) {
       this.categoryPicker.category = { ...cat };
@@ -146,18 +157,19 @@ export default {
 <style lang="scss" scoped>
 
 .expand-group {
+  transition: all 0.5s ease;
   position: relative;
   &-enter-active, &-leave-active {
     transition: transform 500ms ease, opacity 200ms ease;
   }
 
-  &-leave-active &-move{
+  &-leave-active, &-leave ,&-move{
     position: absolute;
   }
 
   &-enter, &-leave-to {
     opacity: 0;
-    transform: translateX(10px);
+    transform: translateX(10px) scaleY(0);
   }
 
   &-move {

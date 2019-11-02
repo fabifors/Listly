@@ -19,14 +19,16 @@
     </header>
     <ul class="todo-list__summary">
       <li 
-        v-for="todo in getFirstFiveTodos(list)"
+        v-for="(todo, i) in getFirstFiveTodos(list)"
         :key="todo.id"
         :class="`todo-list__summary__item ${todo.done ? 'marked-done' : ''}`" 
       >
+        <label :for="`summary-item-${i}`" class="sr-only">Mark as done</label>
         <input
           class="todo-list__summary__item__checkbox"
           type="checkbox"
           @click="markAsDone(todo, list.id)"
+          :id="`summary-item-${i}`"
         >
         <span class="todo-list__summary__item__content">{{ todo.content }}</span>
       </li>
@@ -69,13 +71,13 @@ export default {
   },
   computed: {
     ...mapGetters({
-      lists: 'getAllLists',
-      categories: 'getAllListCategories'
+      lists: 'lists/getAllLists',
+      categories: 'categories/getAllListCategories'
     }),
   },
   methods: {
     markAsDone (todo, listId) {
-      this.$store.dispatch('markDone', { todo, listId});
+      this.$store.dispatch('todos/markDone', { todo, listId }, { root: true });
     },
     getFirstFiveTodos (list) {
       if (this.lists) {
@@ -86,8 +88,8 @@ export default {
         return list.todos;
       }
     },
-    async openList(id) {
-      await this.$store.dispatch('changeList', id);
+    openList(id) {
+      this.$store.dispatch('lists/changeList', id, { root: true })
       this.$router.replace('/');
     },
   }
