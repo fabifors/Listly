@@ -1,42 +1,33 @@
 import hash from '@/utilities/hash';
 import INITIAL_STATE from '../../../INITIAL_STATE';
+import view from './test.vue';
 
 const state = {
-  todos: {
-    id: {
-      content: 'This is the to-do',
-      list_id: 'adwa-awd-a-2-2d-',
-      done: false,
-      editing: false
-    },
-    id: {
-      content: 'This is the to-do',
-      list_id: 'adwa-awd-a-2-2d-',
-      done: false,
-      editing: false
-    },
-    id: {
-      content: 'This is the to-do',
-      list_id: 'adwa-awd-a-2-2d-',
-      done: false,
-      editing: false
-    },
-  },
+  todos: {},
 };
 
 const mutations = {
   ADD_TODO (state, payload) {
     const todo_id = hash();
-    state.todos[todo_id]({
-      content: payload.content,
-      list_id: payload.list_id,
-      done: false,
-      editing: false,
-    });
+    state.todos = {
+      ...state.todos,
+      [todo_id] : {
+        content: payload.content,
+        list_id: payload.list_id,
+        done: false,
+        editing: false,
+      }
+    };
   },
 
   REMOVE_TODO (state, todo_id) {
-    delete state.todos[todo_id];
+    const newState = {
+      ...state.todos
+    };
+    delete newState[todo_id];
+    state.todos = {
+      ...newState
+    };
   },
 
   EDIT_TODO (state, todo_id) {
@@ -49,11 +40,11 @@ const mutations = {
   },
 
   MARK_DONE (state, todo_id) {
-    state[todo_id].done = true;
+    state.todos[todo_id].done = true;
   },
   
   UNMARK_DONE (state, todo_id) {
-    state[todo_id].done = false;
+    state.todos[todo_id].done = false;
   },
 
   REPLACE_TODOS (state, payload) {
@@ -62,61 +53,99 @@ const mutations = {
 };
 
 const actions = {
-  initTodos () {
+  initTodos ({ commit }) {
     if (!localStorage.todos) {
-      state.todos = INITIAL_STATE.todos;
+      commit('REPLACE_TODOS', INITIAL_STATE.todos);
       return;
     }
-    state.todos = JSON.parse(localStorage.todos);
+    console.log('Parsing JSON');
+    const payload = JSON.parse(localStorage.todos);
+    console.log('JSON Parsed: ', payload);
+    commit('REPLACE_TODOS', payload);
   },
 
-  storeTodos (state) {
+  storeTodos ({ state, commit }) {
     localStorage.todos = JSON.stringify(state.todos);
   },
 
   addTodo ({ commit, dispatch }, payload) {
-    commit('ADD_TODO', payload.todo);
-    dispatch('lists/updateTimestamp', payload.list_id, { root: true });
-    dispatch('storeTodos');
+    return new Promise((resolve, reject) => {
+      commit('ADD_TODO', payload);
+      dispatch('storeTodos');
+      resolve();
+    });
+  },
+  
+  removeTodo ({ commit, dispatch }, todo_id) {
+    return new Promise((resolve, reject) => {
+      commit('REMOVE_TODO', todo_id);
+      dispatch('storeTodos');
+      resolve();
+    });
+  },
+  
+  editTodo ({ commit}, todo_id) {
+    return new Promise((resolve, reject) => {
+      commit('EDIT_TODO', todo_id);
+      resolve();
+    });
   },
 
-  removeTodo ({ commit, dispatch }, {todo, listId}) {
-    commit('REMOVE_TODO', {todo, listId});
-    dispatch('lists/updateTimestamp', listId, { root: true });
-    dispatch('updateStorage', { root: true });
+  saveTodo ({ commit, dispatch }, payload) {
+    return new Promise((resolve, reject) => {
+      commit('SAVE_TODO', payload);
+      dispatch('storeTodos');
+      resolve();
+    });
   },
 
-  editTodo ({ commit, dispatch }, {todo, listId}) {
-    commit('EDIT_TODO', {todo, listId});
-    dispatch('lists/updateTimestamp', listId, { root: true });
-    dispatch('updateStorage', { root: true });
+  markDone ({ commit, dispatch }, todo_id) {
+    return new Promise((resolve, reject) => {
+      commit('MARK_DONE', todo_id);
+      dispatch('storeTodos');
+      resolve();
+    });
+  },
+  
+  unmarkDone ({ commit, dispatch }, todo_id) {
+    return new Promise((resolve, reject) => {
+      commit('UNMARK_DONE', todo_id);
+      dispatch('storeTodos');
+      resolve();
+    });
   },
 
-  saveTodo ({ commit, dispatch }, {todo, update, listId}) {
-    commit('SAVE_TODO', {todo, update, listId});
-    dispatch('lists/updateTimestamp', listId, { root: true });
-    dispatch('updateStorage', { root: true });
-  },
-
-  markDone ({ commit, dispatch }, { todo, listId }) {
-    commit('MARK_DONE', { todo, listId });
-    dispatch('lists/updateTimestamp', listId, { root: true });
-    dispatch('updateStorage', { root: true });
-  },
-
-  reorderTodos ({ commit, dispatch }, { list, listId }) {
-    commit('REPLACE_TODOS', { list, listId });
-    dispatch('updateStorage', { root: true });
+  reorderTodos ({ commit, dispatch }, payload) {
+    return new Promise((resolve, reject) => {
+      commit('REPLACE_TODOS', payload);
+      dispatch('storeTodos');
+      resolve();
+    });
   },
 };
 
 const getters = {
-  
+  getListTodos: (state) => (id) => {
+    function todosOwnedByList (todo) { 
+      return state.todos[todo].list_id === id;
+    }
+    
+    function todoObject (todo_id) { 
+      return {...state.todos[todo_id], id: todo_id, };
+    }
+
+    return Object.keys(state.todos).filter(todosOwnedByList).map(todoObject);
+  },
+  getAllTodos: state => {
+    return state.todos;
+  }
 };
 
 export default {
   namespaced: true,
+  state,
   mutations,
   actions,
-  getters
+  getters,
+  view
 };
