@@ -55,7 +55,7 @@ export default {
   },
   mixins: [handleDragging],
   computed: {
-    ...mapGetters({ currentList: 'getCurrentList' })
+    ...mapGetters({ currentList: 'lists/getCurrentList' })
   }
 };
 </script>

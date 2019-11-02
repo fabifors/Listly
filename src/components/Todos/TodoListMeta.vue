@@ -40,7 +40,7 @@ export default {
   },
   computed: {
     listCategoryName () {
-      const category = this.$store.getters.getListCategory(this.list.id);
+      const category = this.$store.getters['lists/getListCategory', this.list.id];
       if (category) {
         return category.name;
       }
@@ -55,7 +55,7 @@ export default {
       } else {
         alert('List removed');
         this.$router.replace('/lists');
-        this.$store.dispatch('removeList', this.list.id);
+        this.$store.dispatch('lists/removeList', this.list.id, { root: true });
       }
     }
   }

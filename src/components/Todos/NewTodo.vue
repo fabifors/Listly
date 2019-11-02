@@ -64,8 +64,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      listTitle: 'getListTitle',
-      listId: 'getCurrentListId'
+      listTitle: 'lists/getListTitle',
+      listId: 'lists/getCurrentListId'
     })
   },
   methods: {
@@ -87,7 +87,7 @@ export default {
 
     changeTitle() {
       const title = this.title.content;
-      this.$store.dispatch('changeListTitle', { title, listId: this.listId});
+      this.$store.dispatch('lists/changeListTitle', { title, listId: this.listId}, { root: true });
       this.title.content = '';
       this.title.editing = false;
     }
