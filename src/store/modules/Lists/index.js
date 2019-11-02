@@ -23,7 +23,13 @@ const mutations = {
   },
 
   REMOVE_LIST (state, list) {
-    delete state.lists[list];
+    const newState = {
+      ...state.lists
+    };
+    delete newState[list];
+    state.lists = {
+      ...newState
+    };
   },
 
   CHANGE_ACTIVE_LIST (state, list_ID) {
