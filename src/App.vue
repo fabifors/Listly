@@ -13,7 +13,7 @@ import Navbar from './components/Navbar';
 export default {
   name: 'TodoApp',
   components: {
-    'nav-bar': Navbar
+    'nav-bar': Navbar,
   },
   created() {
     this.$store.dispatch('lists/initLists', { root: true })
