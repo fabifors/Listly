@@ -5,6 +5,8 @@ import Lists from '../views/Lists';
 import Settings from '../views/Settings';
 import store from '@/store/index.js';
 
+import Testing from '@/views/Testing';
+
 Vue.use(Router);
 
 export default new Router({
@@ -21,6 +23,11 @@ export default new Router({
           next();
         }
       }
+    },
+    {
+      path: '/test',
+      name: 'Testing',
+      component: Testing
     },
     {
       path: '/lists',
