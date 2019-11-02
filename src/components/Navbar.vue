@@ -10,18 +10,22 @@
     <div class="navbar__right">
       <nav class="navigation">
         <ul class="navigation__list">
-          <router-link
-            to="/lists"
-            class="navigation__list__item"
-          >
-            Lists
-          </router-link>
-          <router-link
-            to="/settings"
-            class="navigation__list__item"
-          >
-            Settings
-          </router-link>
+          <li>
+            <router-link
+              to="/lists"
+              class="navigation__list__item"
+            >
+              Lists
+            </router-link>
+          </li>
+          <li>
+            <router-link
+              to="/settings"
+              class="navigation__list__item"
+            >
+              Settings
+            </router-link>
+          </li>
         </ul>
       </nav>
     </div>
