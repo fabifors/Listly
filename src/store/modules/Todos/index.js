@@ -47,7 +47,7 @@ const mutations = {
   },
 
   REPLACE_TODOS (state, payload) {
-    state.todos = payload;
+    state.todos = { ...payload };
   },
 };
 
@@ -79,7 +79,7 @@ const actions = {
   },
   
   removeTodo ({ commit, dispatch }, payload) {
-    console.log(payload)
+    console.log(payload);
     return new Promise((resolve, reject) => {
       commit('REMOVE_TODO', payload);
       dispatch('storeTodos');

@@ -14,25 +14,12 @@
         />{{ list.title }}
       </h4>
       <span class="todo-list__header__category"> 
-        {{ list.category ? categories[list.category].name: 'No category' }}
+        {{ list.category ? categories(list.category).name: 'No category' }}
       </span>
     </header>
-    <ul class="todo-list__summary">
-      <li 
-        v-for="(todo, i) in getFirstFive"
-        :key="todo.id"
-        :class="`todo-list__summary__item ${todo.done ? 'marked-done' : ''}`" 
-      >
-        <label :for="`summary-item-${i}`" class="sr-only">Mark as done</label>
-        <input
-          class="todo-list__summary__item__checkbox"
-          type="checkbox"
-          @click="markAsDone(todo)"
-          :id="`summary-item-${i}`"
-        >
-        <span class="todo-list__summary__item__content">{{ todo.content }}</span>
-      </li>
-    </ul>
+    
+    <todo-list-summary :todos="getFirstFive" />
+
     <footer class="todo-list__footer">
       <div class="todo-list__footer__left">
         <span class="todo-list__footer__label">created</span>
@@ -49,6 +36,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import { ElementMixin, HandleDirective } from 'vue-slicksort';
+import TodoListSummary from './TodoListSummary';
 
 export default {
   name: 'ListComponent',
@@ -56,6 +44,7 @@ export default {
     handle: HandleDirective
   },
   mixins: [ ElementMixin ],
+  components: { 'todo-list-summary': TodoListSummary },
   props: {
     list: {
       type: Object,
@@ -71,7 +60,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      categories: 'categories/getAllListCategories'
+      categories: 'categories/getCategoryById'
     }),
     getFirstFive () {
       if(this.list.id){
@@ -90,14 +79,6 @@ export default {
     }
   },
   methods: {
-    markAsDone (todo) {
-      if (!todo.done) {
-        this.$store.dispatch('todos/markDone', todo.id, { root: true });
-      } else {
-        this.$store.dispatch('todos/unmarkDone', todo.id, { root: true })
-      }
-    },
-
     openList(id) {
       this.$store.dispatch('lists/changeList', id, { root: true })
       this.$router.replace('/');
@@ -146,54 +127,6 @@ export default {
       }
     }
 
-    &__summary {
-      flex-grow: 2;
-      list-style: none;
-      padding: 0;
-      margin-bottom: 1.25rem;
-      &__item {
-        padding: 0.1rem;
-
-        &__checkbox {
-          position: relative;
-          margin-right: 0.75rem;
-          outline: none;
-          &::before {
-            content: '';
-            display: block;
-            position: absolute;
-            border-radius: 5px;
-            left: 0;
-            right: 0;
-            height: 100%;
-            width: 100%;
-            background: var(--background-color-light);
-            border: 2px solid var(--text-color-medium);
-            transition: background 100ms ease-in;
-          }
-        }
-        &.marked-done {
-          .todo-list__summary__item {
-            &__content {
-              text-decoration: line-through;
-              color: var(--text-color-dark--muted);
-            }
-            &__checkbox {
-              &::before {
-                background: var(--text-color-medium);
-              }
-            }
-          }
-          
-        }
-        &__content {
-          font-weight: 600;
-        }
-        &:not(:last-child) {
-        margin-bottom: 1rem;
-        }
-      }
-    }
     &__footer {
       display: flex;
       flex-direction: row;

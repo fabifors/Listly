@@ -7,11 +7,18 @@ import router from '@/router';
 import Lists from './modules/Lists';
 import Todos from './modules/Todos';
 import Categories from './modules/Categories';
-import moderator from './store-moderator.js'
+import Moderator from './moderator';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
+  state : {
+    theme: {
+      color: 70,
+      dark_mode: false
+    }
+  },
+
   mutations: {
     REPLACE_STATE(state, newState) {
       state.currentList = newState.currentList;
@@ -21,21 +28,16 @@ export default new Vuex.Store({
   },
 
   actions: {
-    init ({ rootState, commit }) {
+    init ({ commit }) {
       if(localStorage.state) {
         commit('REPLACE_STATE', JSON.parse(localStorage.state)); 
       } else {
         commit('REPLACE_STATE', INITIAL_STATE);
       }
   
-      if (!rootState.currentList) {
+      if (!localStorage.currentList) {
         router.push('/lists');
       }
-    },
-  
-    updateStorage ({ dispatch }) {
-      dispatch('lists/storeState', { root: true });
-      dispatch('categories/storeState', { root: true });
     },
   },
 
@@ -51,5 +53,5 @@ export default new Vuex.Store({
     lists: Lists,
   },
 
-  plugins: [moderator]
+  plugins: [Moderator]
 });

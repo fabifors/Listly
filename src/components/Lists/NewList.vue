@@ -27,43 +27,7 @@
               class="popup__input"
             >
           </div>
-          <div class="popup__input-group">
-            <label
-              for="title"
-              class="popup__label"
-            >category</label>
-            <div class="popup__input-wrapper">
-              <i class="fad fa-tags input-icon" />
-              <label class="sr-only" for="categoryInput">Add list category</label>
-              <input
-                id="categoryInput"
-                v-model="categoryPicker.category.name"
-                @change="handleOpenCategories()"
-                placeholder="Choose or create"
-                class="popup__input popup__input--with-icon"
-              >
-              <i 
-                :class="`fad fa-caret-down input-dropdown-icon ${categoryPicker.open ? 'input-dropdown-icon--active' : ''}`"
-                @click="!categoryPicker.open ? handleOpenCategories() : handleCloseCategories()"
-              />
-            </div>
-            <transition-group
-              v-if="categoryPicker.open"
-              name="expand-group"
-              tag="ul"
-              class="category-picker"
-              appear
-            >
-              <li 
-                v-for="category in filteredCategories"
-                :key="category.id"
-                class="category-picker__item"
-                @click="chooseCategory({ name: category.name, id: category.id })"
-              >
-                {{ category.name }}
-              </li>
-            </transition-group>
-          </div>
+          <category-picker @picked-category="setCategory" />
           <button
             class="popup__button"
             @click="createNewList()"
@@ -84,7 +48,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import CategoryPicker from './CategoryPicker';
 
 export default {
   name: 'NewList',
@@ -92,43 +56,31 @@ export default {
     return {
       popup: false,
       title: '',
-      
-      categoryPicker:{ 
-        category: {
-          name: '',
-          id: ''
-        },
-        open: false
+      category: {
+        name: '',
+        id: ''
       }
     };
   },
-  computed: {
-    ...mapGetters({
-      categories: 'categories/getAllListCategories'
-    }),
-    filteredCategories () {
-      return Object.keys(this.categories)
-        .map(el => this.categories[el])
-        .filter(cat => cat.name.toLowerCase().includes(this.categoryPicker.category.name.toLowerCase()));
-    }
+  components: {
+    'category-picker': CategoryPicker
   },
   methods: {
+    setCategory (category) {
+      this.category = { ...category }
+    },
+
     createNewList() {
       if (!this.title) {
         this.title = 'My list';
       }
-
-      if (!this.categories[this.categoryPicker.category.id]) {
-        this.categoryPicker.category.id = '';
-      }
-
       const payload = {
         title: this.title,
-        category_id: this.categoryPicker.category.id
+        category_id: this.category.id
       }
       this.$store.dispatch('lists/addList', payload, { root: true }).then(() => {
         this.title = '';
-        this.categoryPicker.category = { name: '', id: '' };
+        this.category = { name: '', id: '' };
         this.popup = false;
       });
     },
@@ -141,22 +93,6 @@ export default {
       this.title = '';
       this.popup = false;
     },
-    handleOpenCategories () {
-      if (!this.categoryPicker.open) {
-        this.categoryPicker.open = true;
-        return;
-      }
-    },
-    handleCloseCategories () {
-      if (this.categoryPicker.open) {
-        this.categoryPicker.open = false;
-        return;
-      }
-    },
-    chooseCategory ({name, id}) {
-      this.categoryPicker.category = { name, id };
-      this.categoryPicker.open = false;
-    }
   }
 };
 </script>
@@ -330,16 +266,7 @@ export default {
           letter-spacing: 0.5px;
         }
       }
-      .category-picker {
-        padding: 0.5rem 0;
-        list-style: none;
-        &__item {
-          padding: 0.25rem 0.75rem;
-          &:not(:last-child) {
-            margin-bottom: 0.25rem;
-          }
-        }
-      }
+      
       &__button {
         cursor: pointer;
         background: var(--background-color);

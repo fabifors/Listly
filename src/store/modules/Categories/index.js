@@ -70,7 +70,13 @@ const actions = {
 
 const getters = {
   getAllListCategories: state => {
-    return state.categories;
+    function getObjectWithKey (key) {
+      return {
+        id: key,
+        ...state.categories[key]
+      };
+    }
+    return Object.keys(state.categories).map(getObjectWithKey);
   },
   getCategoryById: state => id => {
     return state.categories[id];

@@ -22,14 +22,23 @@ export default {
         case 'lists': {
           console.log(list);
           const listObj = list.reduce((acc, item) => {
-            acc[item.id] = { ...item };
+            const id = item.id;
+            delete item.id;
+            acc[id] = { ...item };
             return acc;
           }, {});
           this.$store.dispatch('lists/reorderLists', listObj, { root: true });
           break;
         }
         case 'todos': {
-          this.$store.dispatch('todos/reorderTodos', { list, listId }, { root: true });
+          console.log(list);
+          const todosObj = list.reduce((acc, item) => {
+            const id = item.id;
+            delete item.id;
+            acc[id] = { ...item };
+            return acc;
+          }, {});
+          this.$store.dispatch('todos/reorderTodos', todosObj, { root: true });
           break;
         }
         default: {
