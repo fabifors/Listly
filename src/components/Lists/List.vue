@@ -43,8 +43,8 @@ export default {
   directives: {
     handle: HandleDirective
   },
-  mixins: [ ElementMixin ],
   components: { 'todo-list-summary': TodoListSummary },
+  mixins: [ ElementMixin ],
   props: {
     list: {
       type: Object,
@@ -64,23 +64,24 @@ export default {
     }),
     getFirstFive () {
       if(this.list.id){
-        const _list_id = this.list.id
+        const _list_id = this.list.id;
         const list = this.$store.getters['todos/getListTodos'](_list_id);
         function sortByDone (a, b) {
-          return a.done - b.done
+          return a.done - b.done;
         }
-        list.sort(sortByDone)
+        list.sort(sortByDone);
         if(list.length > 5) {
           list.length = 5;
           return list;
         }
         return list;
       }
+      return [];
     }
   },
   methods: {
     openList(id) {
-      this.$store.dispatch('lists/changeList', id, { root: true })
+      this.$store.dispatch('lists/changeList', id, { root: true });
       this.$router.replace('/');
     },
   }

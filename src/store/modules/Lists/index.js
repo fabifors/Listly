@@ -10,7 +10,6 @@ const mutations = {
   ADD_LIST (state, payload) {
     const timestamp = Date.now();
     state.lists = {
-      ...state.lists,
       [payload.list_id]: {
         title: payload.title,
         id: payload.list_id,
@@ -18,7 +17,8 @@ const mutations = {
         todos: {},
         created: timestamp,
         updated: timestamp
-      }
+      },
+      ...state.lists,
     };
   },
 
@@ -139,7 +139,7 @@ const actions = {
       dispatch('updateTimestamp', listId);
       dispatch('storeLists');
       resolve();
-    })
+    });
   },
 
   updateTimestamp ({ commit }, listId) {
@@ -148,7 +148,7 @@ const actions = {
       commit('UPDATE_TIMESTAMP', { listId, timestamp });
       dispatch('storeLists');
       resolve();
-    })
+    });
   },
 
   reorderLists ({ commit, dispatch }, lists) {
@@ -156,15 +156,15 @@ const actions = {
       commit('REPLACE_LISTS', lists);
       dispatch('storeLists');
       resolve();
-    })
+    });
   },
   // TODO's
   addTodo ({ commit, dispatch }, payload) {
     return new Promise((resolve, reject)=> {
       commit('ADD_TODO', payload);
-      dispatch('storeLists')
+      dispatch('storeLists');
       resolve();
-    })
+    });
   },
 
   removeTodo ({ commit, dispatch }, payload) {
@@ -173,7 +173,7 @@ const actions = {
       commit('REMOVE_TODO', payload);
       dispatch('storeLists');
       resolve();
-    })
+    });
   }
 };
 

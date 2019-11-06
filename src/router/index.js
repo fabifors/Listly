@@ -17,6 +17,7 @@ export default new Router({
       component: Todos,
       beforeEnter(to, from, next) {
         if(!store.getters['lists/getCurrentList']) {
+          console.log(store.getters['lists/getCurrentList']);
           next('/lists');
         } else {
           next();

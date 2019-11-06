@@ -9,13 +9,13 @@ const state = {
 const mutations = {
   ADD_TODO (state, payload) {
     state.todos = {
-      ...state.todos,
       [payload.todo_id] : {
         content: payload.content,
         list_id: payload.list_id,
         done: false,
         editing: false,
-      }
+      },
+      ...state.todos,
     };
   },
 

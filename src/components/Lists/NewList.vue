@@ -21,8 +21,8 @@
               class="popup__label"
             >title</label>
             <input
-              v-model="title"
               id="newListTitle"
+              v-model="title"
               placeholder="My list"
               class="popup__input"
             >
@@ -52,6 +52,9 @@ import CategoryPicker from './CategoryPicker';
 
 export default {
   name: 'NewList',
+  components: {
+    'category-picker': CategoryPicker
+  },
   data() {
     return {
       popup: false,
@@ -62,12 +65,9 @@ export default {
       }
     };
   },
-  components: {
-    'category-picker': CategoryPicker
-  },
   methods: {
     setCategory (category) {
-      this.category = { ...category }
+      this.category = { ...category };
     },
 
     createNewList() {
@@ -77,7 +77,7 @@ export default {
       const payload = {
         title: this.title,
         category_id: this.category.id
-      }
+      };
       this.$store.dispatch('lists/addList', payload, { root: true }).then(() => {
         this.title = '';
         this.category = { name: '', id: '' };

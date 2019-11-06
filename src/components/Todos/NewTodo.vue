@@ -76,7 +76,7 @@ export default {
       const payload = {
         content: this.content, 
         list_id: this.list_id
-      }
+      };
       this.$store.dispatch('todos/addTodo', payload).then(() => {
         this.content = '';
       });

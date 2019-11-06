@@ -5,12 +5,15 @@
       :key="todo.id"
       :class="`todo-list__summary__item ${todo.done ? 'marked-done' : ''}`" 
     >
-      <label :for="`summary-item-${i}`" class="sr-only">Mark as done</label>
+      <label
+        :for="`summary-item-${i}`"
+        class="sr-only"
+      >Mark as done</label>
       <input
+        :id="`summary-item-${i}`"
         class="todo-list__summary__item__checkbox"
         type="checkbox"
         @click="markAsDone(todo)"
-        :id="`summary-item-${i}`"
       >
       <span class="todo-list__summary__item__content">{{ todo.content }}</span>
     </li>
@@ -22,7 +25,10 @@ export default {
   name: 'TodoListSummary',
   props: {
     todos: {
-      type: Array
+      type: Array,
+      default: () => {
+        return [];
+      }
     }
   },
 
@@ -31,11 +37,11 @@ export default {
       if (!todo.done) {
         this.$store.dispatch('todos/markDone', todo.id, { root: true });
       } else {
-        this.$store.dispatch('todos/unmarkDone', todo.id, { root: true })
+        this.$store.dispatch('todos/unmarkDone', todo.id, { root: true });
       }
     },
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

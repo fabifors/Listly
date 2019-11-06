@@ -6,13 +6,16 @@
     >category</label>
     <div class="category-picker__input-wrapper">
       <i class="fad fa-tags input-icon" />
-      <label class="sr-only" for="categoryInput">Add list category</label>
+      <label
+        class="sr-only"
+        for="categoryInput"
+      >Add list category</label>
       <input
         id="categoryInput"
         v-model="category.name"
-        @change="handleOpenCategories()"
         placeholder="Choose or create"
         class="category-picker__input category-picker__input--with-icon"
+        @change="handleOpenCategories()"
       >
       <i 
         :class="`fad fa-caret-down input-dropdown-icon ${open ? 'input-dropdown-icon--active' : ''}`"
@@ -50,7 +53,7 @@ export default {
         id: ''
       },
       open: false
-    }
+    };
   },
   computed: {
     ...mapGetters({
@@ -79,7 +82,7 @@ export default {
       this.category = {
         name,
         id
-      }
+      };
       this.$emit('picked-category', this.category);
       this.open = false;
     },
@@ -87,7 +90,7 @@ export default {
       
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

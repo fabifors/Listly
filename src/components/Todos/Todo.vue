@@ -118,13 +118,13 @@ export default {
       const payload = { 
         todo_id: todo.id,
         content: edit
-      }
+      };
       this.$store.dispatch('todos/saveTodo', payload, { root: true });
     },
 
     markDone(todo) {
       if (!todo.editing) {
-        const todo_id = todo.id
+        const todo_id = todo.id;
         if(todo.done) {
           this.$store.dispatch('todos/unmarkDone', todo_id), { root: true };
         } else {

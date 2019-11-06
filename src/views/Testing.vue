@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import todos from '@/store/modules/Todos'
+import todos from '@/store/modules/Todos';
 
 export default {
   name: 'Testing',
@@ -15,5 +15,5 @@ export default {
   beforeCreate () {
     this.$store.dispatch('todos/initTodos', { root: true });
   }
-}
+};
 </script>
