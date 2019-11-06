@@ -40,15 +40,15 @@ export default {
     display: flex;
     flex-direction: row;
     
-  }
-  .flex-item-1 {
-    flex-grow: 3;
-    margin-right: 1rem;
-  }
+    .flex-item-1 {
+      flex-grow: 3;
+      margin-right: 1rem;
+    }
 
-  .flex-item-2 {
-    flex-grow: 1;
-    height: 300px;
+    .flex-item-2 {
+      flex-grow: 1;
+      height: 300px;
+    }
   }
 }
 </style>
