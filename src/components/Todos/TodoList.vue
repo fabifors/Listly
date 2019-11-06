@@ -3,10 +3,10 @@
     <aside class="todos-section__info">
       <h4 class="todos-section__info__label">
         <span class="todos-section__info__label__badge">
-          {{ currentList.todos.filter(todo => todo.done).length }}
+          {{ getListTodos.filter(todo => todo.done).length }}
         </span>out of
         <span class="todos-section__info__label__badge">
-          {{ currentList.todos.length }}
+          {{ getListTodos.length }}
         </span>todos marked as done
       </h4>
     </aside>
@@ -15,16 +15,17 @@
       v-model="handleDrag.sortedTodos"
       :class="{'dragging': handleDrag.bool}"
       :use-drag-handle="true"
-      @sort-start="dragStart($event, currentList.todos)"
+      @sort-start="dragStart($event, getListTodos)"
       @sort-end="sortEnd()"
       @input="reorder($event, 'todos', currentList.id)"
     >
       <transition-group 
         name="animation" 
         tag="ul"
+        class="animatedList"
       >
         <to-do
-          v-for="(todo, index) in currentList.todos"
+          v-for="(todo, index) in getListTodos"
           :key="todo.id"
           :index="parseInt(index)"
           :todo="todo"
@@ -55,7 +56,10 @@ export default {
   },
   mixins: [handleDragging],
   computed: {
-    ...mapGetters({ currentList: 'lists/getCurrentList' })
+    ...mapGetters({ currentList: 'lists/getCurrentList' }),
+    getListTodos () {
+      return this.$store.getters['todos/getListTodos'](this.currentList.id);
+    }
   }
 };
 </script>
@@ -82,7 +86,7 @@ export default {
   transition: none;
 }
 
-.animation {
+.animatedList {
   position: relative;
 }
 

@@ -1,21 +1,12 @@
-import INITIAL_STATE from '@/INITIAL_STATE';
-import router from '@/router';
-
 export default {
-  init ({ rootState, commit }) {
-    if(localStorage.state) {
-      commit('REPLACE_STATE', JSON.parse(localStorage.state)); 
-    } else {
-      commit('REPLACE_STATE', INITIAL_STATE);
-    }
-
-    if (!rootState.currentList) {
-      router.push('/lists');
-    }
+  init ({ dispatch }) {
+    dispatch('lists/initLists', { root:true });
+    dispatch('todos/initTodos', { root:true });
+    dispatch('categories/initCategories', { root:true });
   },
 
-  updateStorage () {
-    localStorage.state = JSON.stringify(this.getters.getState);
-  },
+  // updateStorage () {
+  //   localStorage.state = JSON.stringify(this.getters.getState);
+  // },
 
 };

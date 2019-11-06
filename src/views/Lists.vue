@@ -151,9 +151,9 @@ export default {
 
     filteredList () {
       if(this.lists) {
-        console.log(this.lists)
+        // console.log(this.lists)
         const listArray = Object.keys(this.lists).map(id => this.lists[id]);
-        console.log(listArray)
+        // console.log(listArray)
         return this.$options.filters.listCategory(listArray, this.activeFilters);
       }
     },

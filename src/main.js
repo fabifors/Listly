@@ -3,7 +3,6 @@ import App from './App.vue';
 import store from '@/store/index.js';
 import router from './router/index.js';
 import * as moment from 'moment';
-
 import { VueMasonryPlugin } from 'vue-masonry';
 
 Vue.config.productionTip = false;
@@ -13,6 +12,7 @@ Vue.filter('fromToday', function (time) {
   time = moment(time).fromNow();
   return time;
 });
+
 
 Vue.filter('listCategory', function (lists, categories) {
   const result = [];

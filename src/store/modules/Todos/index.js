@@ -8,10 +8,9 @@ const state = {
 
 const mutations = {
   ADD_TODO (state, payload) {
-    const todo_id = hash();
     state.todos = {
       ...state.todos,
-      [todo_id] : {
+      [payload.todo_id] : {
         content: payload.content,
         list_id: payload.list_id,
         done: false,
@@ -20,11 +19,11 @@ const mutations = {
     };
   },
 
-  REMOVE_TODO (state, todo_id) {
+  REMOVE_TODO (state, payload) {
     const newState = {
       ...state.todos
     };
-    delete newState[todo_id];
+    delete newState[payload.todo_id];
     state.todos = {
       ...newState
     };
@@ -58,27 +57,31 @@ const actions = {
       commit('REPLACE_TODOS', INITIAL_STATE.todos);
       return;
     }
-    console.log('Parsing JSON');
     const payload = JSON.parse(localStorage.todos);
-    console.log('JSON Parsed: ', payload);
     commit('REPLACE_TODOS', payload);
   },
 
-  storeTodos ({ state, commit }) {
+  storeTodos ({ state }) {
     localStorage.todos = JSON.stringify(state.todos);
   },
 
   addTodo ({ commit, dispatch }, payload) {
     return new Promise((resolve, reject) => {
+      const todo_id = hash();
+      payload = {
+        ...payload,
+        todo_id
+      };
       commit('ADD_TODO', payload);
       dispatch('storeTodos');
       resolve();
     });
   },
   
-  removeTodo ({ commit, dispatch }, todo_id) {
+  removeTodo ({ commit, dispatch }, payload) {
+    console.log(payload)
     return new Promise((resolve, reject) => {
-      commit('REMOVE_TODO', todo_id);
+      commit('REMOVE_TODO', payload);
       dispatch('storeTodos');
       resolve();
     });
@@ -91,7 +94,7 @@ const actions = {
     });
   },
 
-  saveTodo ({ commit, dispatch }, payload) {
+  saveTodo ({ commit, dispatch }, payload = Object) {
     return new Promise((resolve, reject) => {
       commit('SAVE_TODO', payload);
       dispatch('storeTodos');
@@ -125,19 +128,26 @@ const actions = {
 };
 
 const getters = {
-  getListTodos: (state) => (id) => {
-    function todosOwnedByList (todo) { 
-      return state.todos[todo].list_id === id;
+  getListTodos: (state) => (_list_id) => {
+    function listTodos (todo) {
+      return state.todos[todo].list_id === _list_id;
+    } 
+    function getObjectWithKey(key) {
+      return {
+        id: key,
+        ...state.todos[key]
+      };
     }
-    
-    function todoObject (todo_id) { 
-      return {...state.todos[todo_id], id: todo_id, };
-    }
-
-    return Object.keys(state.todos).filter(todosOwnedByList).map(todoObject);
+    return Object.keys(state.todos).filter(listTodos).map(getObjectWithKey);
   },
   getAllTodos: state => {
-    return state.todos;
+    function getObjectWithKey (key) {
+      return {
+        id: key,
+        ...state.todos[key]
+      };
+    }
+    return Object.keys(state.todos).map(getObjectWithKey);
   }
 };
 

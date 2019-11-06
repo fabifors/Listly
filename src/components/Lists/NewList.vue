@@ -58,7 +58,7 @@
                 v-for="category in filteredCategories"
                 :key="category.id"
                 class="category-picker__item"
-                @click="chooseCategory({cat: {name: category.name, id: category.id}})"
+                @click="chooseCategory({ name: category.name, id: category.id })"
               >
                 {{ category.name }}
               </li>
@@ -117,13 +117,20 @@ export default {
       if (!this.title) {
         this.title = 'My list';
       }
+
       if (!this.categories[this.categoryPicker.category.id]) {
         this.categoryPicker.category.id = '';
       }
-      this.$store.dispatch('lists/addList', { title: this.title, cat: this.categoryPicker.category }, { root: true });
-      this.title = '';
-      this.categoryPicker.category = { name: '', id: '' };
-      this.popup = false;
+
+      const payload = {
+        title: this.title,
+        category_id: this.categoryPicker.category.id
+      }
+      this.$store.dispatch('lists/addList', payload, { root: true }).then(() => {
+        this.title = '';
+        this.categoryPicker.category = { name: '', id: '' };
+        this.popup = false;
+      });
     },
 
     handleOpenPopup () {
@@ -146,8 +153,8 @@ export default {
         return;
       }
     },
-    chooseCategory ({cat}) {
-      this.categoryPicker.category = { ...cat };
+    chooseCategory ({name, id}) {
+      this.categoryPicker.category = { name, id };
       this.categoryPicker.open = false;
     }
   }

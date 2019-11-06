@@ -7,6 +7,7 @@ import router from '@/router';
 import Lists from './modules/Lists';
 import Todos from './modules/Todos';
 import Categories from './modules/Categories';
+import moderator from './store-moderator.js'
 
 Vue.use(Vuex);
 
@@ -47,6 +48,8 @@ export default new Vuex.Store({
   modules: {
     todos: Todos,
     categories: Categories,
-    lists: Lists
-  }
+    lists: Lists,
+  },
+
+  plugins: [moderator]
 });

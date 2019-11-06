@@ -23,7 +23,7 @@
     </header>
     <form
       class="new-todo__form"
-      @submit.prevent="addTodo(content)"
+      @submit.prevent="addTodo()"
     >
       <label
         class="new-todo__form__label"
@@ -64,8 +64,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      listTitle: 'lists/getListTitle',
-      listId: 'lists/getCurrentListId'
+      listTitle: 'lists/getCurrentListTitle',
+      list_id: 'lists/getCurrentListId'
     })
   },
   methods: {
@@ -73,8 +73,13 @@ export default {
       if(!this.content) {
         return;
       }
-      this.$store.dispatch('addTodo', { todo, listId: this.listId });
-      this.content = '';
+      const payload = {
+        content: this.content, 
+        list_id: this.list_id
+      }
+      this.$store.dispatch('todos/addTodo', payload).then(() => {
+        this.content = '';
+      });
     },
 
     editTitle() {

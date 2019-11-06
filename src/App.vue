@@ -16,8 +16,9 @@ export default {
     'nav-bar': Navbar,
   },
   created() {
-    this.$store.dispatch('lists/initLists', { root: true })
-    this.$store.dispatch('categories/initCategories', { root: true })
+    this.$store.dispatch('lists/initLists', { root: true });
+    this.$store.dispatch('todos/initTodos', { root: true });
+    this.$store.dispatch('categories/initCategories', { root: true });
     // this.$store.dispatch('init', { root: true });
   }
 };

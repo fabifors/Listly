@@ -97,29 +97,39 @@ export default {
 
   methods: {
     remove(todo) {
-      const listId = this.listId;
-      this.$store.dispatch('removeTodo', {todo, listId});
+      const payload = {
+        todo_id: todo.id,
+        list_id: this.listId
+      };
+      this.$store.dispatch('todos/removeTodo', payload, { root: true });
     },
 
     editTodo(todo) {
-      const listId = this.listId;
-      this.$store.dispatch('editTodo', {todo, listId});
-      this.edit = todo.content;
-      setTimeout(() => {
-        this.$refs.editing.focus();
-      }, 25);
+      const todo_id = todo.id;
+      this.$store.dispatch('todos/editTodo', todo_id, { root: true })
+        .then(() => {
+          this.edit = todo.content;
+          this.$refs.editing.focus();
+        });
+      
     },
 
     saveTodo(todo, edit) {
-      const listId = this.listId;
-      const update = this.edit;
-      this.$store.dispatch('saveTodo', { todo, update, listId });
+      const payload = { 
+        todo_id: todo.id,
+        content: edit
+      }
+      this.$store.dispatch('todos/saveTodo', payload, { root: true });
     },
 
     markDone(todo) {
       if (!todo.editing) {
-        const listId = this.listId;
-        this.$store.dispatch('markDone', { todo, listId });
+        const todo_id = todo.id
+        if(todo.done) {
+          this.$store.dispatch('todos/unmarkDone', todo_id), { root: true };
+        } else {
+          this.$store.dispatch('todos/markDone', todo_id, { root: true });
+        }
       }
     },
     log (value) {

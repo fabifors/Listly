@@ -37,14 +37,15 @@ const mutations = {
 
 const actions = {
   initCategories ({ commit }) {
-    if (localStorage.categories) {
-      commit('REPLACE_CATEGORIES', localStorage.categories);
-    } else {
+    if (!localStorage.categories) {
       commit('REPLACE_CATEGORIES', INITIAL_STATE.categories);
+      return;
     }
+    const payload = JSON.parse(localStorage.categories);
+    commit('REPLACE_CATEGORIES', payload);
   },
 
-  storeState ({ state }) {
+  storeCategories ({ state }) {
     localStorage.categories = JSON.stringify(state.categories);
   },
 
@@ -52,18 +53,18 @@ const actions = {
     await commit('ADD_CATEGORY', { catId, name});
     commit('ADD_LIST_TO_CATEGORY', { catId, listId });
     commit('lists/UPDATE_LIST_CATEGORY', { catId, listId }, { root: true });
-    dispatch('updateStorage', { root: true });
+    dispatch('storeCategories');
   },
 
   removeListFromCategory ({ commit, dispatch }, { catId, listId }) {
     commit('REMOVE_CATEGORY_FROM_LIST', { catId, listId });
     commit('lists/UPDATE_LIST_CATEGORY', { listId, catId: '' }, { root: true });
-    dispatch('updateStorage', { root: true });
+    dispatch('storeCategories');
   },
 
   updateCategoryName ({ commit, dispatch }, { catId, name }) {
     commit('UPDATE_CATEGORY_NAME', { catId, name });
-    dispatch('updateStorage', { root: true });
+    dispatch('storeCategories');
   }
 };
 
@@ -71,13 +72,8 @@ const getters = {
   getAllListCategories: state => {
     return state.categories;
   },
-  getListCategory: state => listId => {
-    const categoryID = Object.keys(state.categories).filter(cat => state.categories[cat].lists.includes(listId));
-    if(categoryID) {
-      return state.categories[categoryID];
-    } else {
-      return false;
-    }
+  getCategoryById: state => id => {
+    return state.categories[id];
   }
 };
 

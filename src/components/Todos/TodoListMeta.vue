@@ -40,9 +40,9 @@ export default {
   },
   computed: {
     listCategoryName () {
-      const category = this.$store.getters['lists/getListCategory', this.list.id];
-      if (category) {
-        return category.name;
+      const cat = this.$store.getters['categories/getCategoryById'](this.list.category);
+      if (cat) {
+        return cat.name;
       }
       return 'No category';
     }

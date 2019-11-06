@@ -19,7 +19,7 @@
     </header>
     <ul class="todo-list__summary">
       <li 
-        v-for="(todo, i) in getFirstFiveTodos(list)"
+        v-for="(todo, i) in getFirstFive"
         :key="todo.id"
         :class="`todo-list__summary__item ${todo.done ? 'marked-done' : ''}`" 
       >
@@ -27,7 +27,7 @@
         <input
           class="todo-list__summary__item__checkbox"
           type="checkbox"
-          @click="markAsDone(todo, list.id)"
+          @click="markAsDone(todo)"
           :id="`summary-item-${i}`"
         >
         <span class="todo-list__summary__item__content">{{ todo.content }}</span>
@@ -71,23 +71,33 @@ export default {
   },
   computed: {
     ...mapGetters({
-      lists: 'lists/getAllLists',
       categories: 'categories/getAllListCategories'
     }),
+    getFirstFive () {
+      if(this.list.id){
+        const _list_id = this.list.id
+        const list = this.$store.getters['todos/getListTodos'](_list_id);
+        function sortByDone (a, b) {
+          return a.done - b.done
+        }
+        list.sort(sortByDone)
+        if(list.length > 5) {
+          list.length = 5;
+          return list;
+        }
+        return list;
+      }
+    }
   },
   methods: {
-    markAsDone (todo, listId) {
-      this.$store.dispatch('todos/markDone', { todo, listId }, { root: true });
-    },
-    getFirstFiveTodos (list) {
-      if (this.lists) {
-        const todos = [...list.todos].sort((a, b) => a.done - b.done);
-        if (todos.length > 5) {
-          todos.length = 5;
-        }
-        return list.todos;
+    markAsDone (todo) {
+      if (!todo.done) {
+        this.$store.dispatch('todos/markDone', todo.id, { root: true });
+      } else {
+        this.$store.dispatch('todos/unmarkDone', todo.id, { root: true })
       }
     },
+
     openList(id) {
       this.$store.dispatch('lists/changeList', id, { root: true })
       this.$router.replace('/');
