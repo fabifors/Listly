@@ -36,6 +36,11 @@ export default {
 .container {
   display: flex;
   flex-direction: column;
+  
+  .flex-item-1, .flex-item-2 {
+    margin-bottom: 1rem;
+  }
+
   @media screen and (min-width: 800px) {  
     display: flex;
     flex-direction: row;

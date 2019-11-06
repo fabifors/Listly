@@ -48,8 +48,8 @@ const mutations = {
     state.lists = lists;
   },
 
-  UPDATE_TIMESTAMP (state, { list_id, timestamp }) {
-    state.lists[list_id].updated = timestamp;
+  UPDATE_TIMESTAMP (state, payload) {
+    state.lists[payload.list_id].updated = payload.timestamp;
   },
 
   // ADD OR REMOVE TWO WAY CONNECTION TO TODOS
@@ -116,36 +116,39 @@ const actions = {
     // commit('CHANGE_ACTIVE_LIST', listId);
   },
 
-  removeList ({ commit, dispatch }, listId) {
+  removeList ({ commit, dispatch }, list_id) {
     return new Promise((resolve, reject)=> {
-      commit('REMOVE_LIST', listId);
+      commit('REMOVE_LIST', list_id);
       commit('CHANGE_ACTIVE_LIST', '');
       dispatch('storeLists');
       resolve();
     });
   },
 
-  changeList ({ commit }, listId) {
+  changeList ({ commit }, list_id) {
     return new Promise((resolve, reject)=> {
-      commit('CHANGE_ACTIVE_LIST', listId);
+      commit('CHANGE_ACTIVE_LIST', list_id);
       resolve();
     });
   },
 
-  changeListTitle ({ commit, dispatch, rootState }, title) {
+  changeListTitle ({ state, commit, dispatch }, title) {
     return new Promise((resolve, reject)=> {
-      const listId = rootState.currentList;
+      const list_id = state.currentList;
       commit('CHANGE_LIST_TITLE', title);
-      dispatch('updateTimestamp', listId);
+      dispatch('updateTimestamp', list_id);
       dispatch('storeLists');
       resolve();
     });
   },
 
-  updateTimestamp ({ commit }, listId) {
+  updateTimestamp ({ commit, dispatch }, list_id) {
     return new Promise((resolve, reject)=> {
-      const timestamp = new Date().getTime();
-      commit('UPDATE_TIMESTAMP', { listId, timestamp });
+      const payload = {
+        timestamp: new Date().getTime(),
+        list_id
+      };
+      commit('UPDATE_TIMESTAMP', payload);
       dispatch('storeLists');
       resolve();
     });
@@ -168,7 +171,6 @@ const actions = {
   },
 
   removeTodo ({ commit, dispatch }, payload) {
-    console.log(payload);
     return new Promise((resolve, reject) => {
       commit('REMOVE_TODO', payload);
       dispatch('storeLists');

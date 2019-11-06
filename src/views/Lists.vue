@@ -8,11 +8,13 @@
       <form
         v-if="window.width >= 500"
         class="search-form"
-        @submit.prevent=""
+        @submit.prevent
       >
+        <label for="search" class="sr-only">Search</label>
         <input 
           v-model="search" 
-          type="text" 
+          type="text"
+          id="search"
           class="search-form__input" 
           placeholder="Search"
         >

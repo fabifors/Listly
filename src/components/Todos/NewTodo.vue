@@ -91,8 +91,11 @@ export default {
     },
 
     changeTitle() {
-      const title = this.title.content;
-      this.$store.dispatch('lists/changeListTitle', { title, listId: this.listId}, { root: true });
+      const payload = {
+        title: this.title.content, 
+        list_id: this.list_id
+      }
+      this.$store.dispatch('lists/changeListTitle', payload , { root: true });
       this.title.content = '';
       this.title.editing = false;
     }
