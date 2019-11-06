@@ -17,6 +17,9 @@ export default function Moderator (store) {
       case 'lists/REMOVE_TODO': {
         return store.dispatch('lists/updateTimestamp', payload.list_id);
       }
+      case 'lists/UPDATE_TITLE': {
+        return store.dispatch('lists/updateTimestamp', payload.list_id);
+      }
     }
   });
 }

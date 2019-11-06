@@ -79,7 +79,6 @@ const actions = {
   },
   
   removeTodo ({ commit, dispatch }, payload) {
-    console.log(payload);
     return new Promise((resolve, reject) => {
       commit('REMOVE_TODO', payload);
       dispatch('storeTodos');
