@@ -123,10 +123,10 @@ export default new Vuex.Store({
       state.categories[catId].name = name;
     },
 
-    REPLACE_STATE(state, newState) {
-      state.currentList = newState.currentList;
-      state.lists = { ...newState.lists };
-      state.categories = {...newState.categories};
+    REPLACE_STATE(state, payload) {
+      state.currentList = payload.currentList;
+      state.lists = { ...payload.lists };
+      state.categories = {...payload.categories};
     }
   },
   actions: {

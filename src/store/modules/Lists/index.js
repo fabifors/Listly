@@ -23,12 +23,12 @@ const mutations = {
   },
 
   REMOVE_LIST (state, list) {
-    const newState = {
+    const prevState = {
       ...state.lists
     };
-    delete newState[list];
+    delete prevState[list];
     state.lists = {
-      ...newState
+      ...prevState
     };
   },
 
@@ -44,8 +44,8 @@ const mutations = {
     state.lists[list_id].category = cat_id;
   },
 
-  REPLACE_LISTS (state, lists) {
-    state.lists = lists;
+  REPLACE_LISTS (state, payload) {
+    state.lists = payload;
   },
 
   UPDATE_TIMESTAMP (state, payload) {
@@ -54,20 +54,20 @@ const mutations = {
 
   // ADD OR REMOVE TWO WAY CONNECTION TO TODOS
   ADD_TODO (state, payload) {
-    const oldState = state.lists[payload.list_id].todos;
+    const prevState = state.lists[payload.list_id].todos;
     state.lists[payload.list_id].todos = {
-      ...oldState,
-      [payload.todo_id]: true
+      [payload.todo_id]: true,
+      ...prevState,
     };
   },
 
   REMOVE_TODO (state, payload) {
-    const newState = {
+    const prevState = {
       ...state.lists[payload.list_id].todos
     };
-    delete newState[payload.todo_id];
+    delete prevState[payload.todo_id];
     state.lists[payload.list_id].todos = {
-      ...newState
+      ...prevState
     };
   },
 
@@ -106,20 +106,6 @@ const actions = {
       dispatch('storeLists');
       resolve();
     });
-    // const listId = hash();
-    // if (!cat.name) {
-    //   commit('ADD_LIST', { title, listId, cat: '' });
-    // } 
-    // if (!cat.id) {
-    //   const catId = hash();
-    //   dispatch('categories/addNewCategory', { name: cat.name, catId, listId }, { root: true });
-    //   commit('ADD_LIST', {title, listId, cat: catId});
-    // } else {
-    //   commit('ADD_LIST', { title, listId, catId: cat.id });
-    //   commit('categories/ADD_LIST_TO_CATEGORY', { catId: cat.id, listId }, { root: true });
-    // }
-    // dispatch('storeLists');
-    // commit('CHANGE_ACTIVE_LIST', listId);
   },
 
   removeList ({ commit, dispatch }, list_id) {

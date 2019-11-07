@@ -20,10 +20,10 @@ export default new Vuex.Store({
   },
 
   mutations: {
-    REPLACE_STATE(state, newState) {
-      state.currentList = newState.currentList;
-      state.lists = { ...newState.lists };
-      state.categories = {...newState.categories};
+    REPLACE_STATE(state, payload) {
+      state.currentList = payload.currentList;
+      state.lists = { ...payload.lists };
+      state.categories = {...payload.categories};
     }
   },
 

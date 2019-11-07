@@ -9,21 +9,38 @@ const mutations = {
     state.categories[catId] = {
       id: catId,
       name,
-      lists: []
+      lists: {}
     };
   },
 
-  ADD_LIST_TO_CATEGORY (state, { listId, catId }) {
-    state.categories[catId].lists.push(listId);
+  ADD_LIST_TO_CATEGORY (state, { list_id, category_id }) {
+    const prevState = {
+      ...state.categories
+    };
+    state.categories[category_id].lists = {
+      [list_id]: true,
+      ...prevState
+    };
   },
 
-  REMOVE_CATEGORY_FROM_LIST (state, { listId, catId }) {
-    const index = state.categories[catId].lists.indexOf(listId);
-    state.categories[catId].lists.splice(index, 1);
+  REMOVE_LIST_FROM_CATEGORY (state, { list_id, category_id }) {
+    const prevState = {
+      ...state.categories
+    };
+    delete prevState[category_id].lists[list_id];
+    state.categories = {
+      ...prevState
+    };
   },
 
   DELETE_CATEGORY (state, id) {
-    delete state.categories[id];
+    const prevState = {
+      ...state.categories
+    };
+    delete prevState[id];
+    state.categories = {
+      ...prevState
+    };
   },
 
   UPDATE_CATEGORY_NAME (state, { name, catId }) {
@@ -49,22 +66,28 @@ const actions = {
     localStorage.categories = JSON.stringify(state.categories);
   },
 
-  async addNewCategory ({ commit, dispatch }, { name, catId, listId }) {
-    await commit('ADD_CATEGORY', { catId, name});
-    commit('ADD_LIST_TO_CATEGORY', { catId, listId });
-    commit('lists/UPDATE_LIST_CATEGORY', { catId, listId }, { root: true });
-    dispatch('storeCategories');
+  addNewCategory ({ commit, dispatch }, payload) {
+    return new Promise((resolve, reject) => {
+      commit('ADD_CATEGORY', payload);
+      dispatch('storeCategories');
+      resolve();
+    });
   },
 
-  removeListFromCategory ({ commit, dispatch }, { catId, listId }) {
-    commit('REMOVE_CATEGORY_FROM_LIST', { catId, listId });
-    commit('lists/UPDATE_LIST_CATEGORY', { listId, catId: '' }, { root: true });
-    dispatch('storeCategories');
+  removeListFromCategory ({ commit, dispatch }, payload) {
+    return new Promise((resolve, reject) => {
+      commit('REMOVE_CATEGORY_FROM_LIST', payload);
+      dispatch('storeCategories');
+      resolve();
+    });
   },
 
-  updateCategoryName ({ commit, dispatch }, { catId, name }) {
-    commit('UPDATE_CATEGORY_NAME', { catId, name });
-    dispatch('storeCategories');
+  updateCategoryName ({ commit, dispatch }, payload) {
+    return new Promise((resolve, reject) => {
+      commit('UPDATE_CATEGORY_NAME', payload);
+      dispatch('storeCategories');
+      resolve();
+    });
   }
 };
 
@@ -78,6 +101,16 @@ const getters = {
     }
     return Object.keys(state.categories).map(getObjectWithKey);
   },
+
+  getCategoryByName: state => name => {
+    function categoryByName (id) {
+      const item = state.categories[id].name.toLowerCase();
+      return item === name.toLowerCase();
+    }
+    const result = Object.keys(state.categories).find(categoryByName);
+    return result ? result : false;
+  },
+
   getCategoryById: state => id => {
     return state.categories[id];
   }

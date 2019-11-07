@@ -37,13 +37,15 @@
         </form>
       </div>
     </transition>
-    <button
-      :class="`new-list__btn ${popup ? 'new-list__btn--active' : ''}`"
-      @click.prevent="handleOpenPopup"
-    >
-      <span class="sr-only">Create new list</span>
-      <i class="fad fa-plus" />
-    </button>
+    <div class="layout-section button-wrapper">
+      <button
+        :class="`new-list__btn ${popup ? 'new-list__btn--active' : ''}`"
+        @click.prevent="handleOpenPopup"
+      >
+        <span class="sr-only">Create new list</span>
+        <i class="fad fa-plus" />
+      </button>
+    </div>
   </div>
 </template>
 
@@ -141,6 +143,7 @@ export default {
 }
 
 .new-list {
+  
   &__overlay {
     position: fixed;
     height: 100%;
@@ -149,10 +152,20 @@ export default {
     left: 0;
     background: rgba(0,0,0,0.5);
   }
-  &__btn {
+  .button-wrapper {
+
     position: fixed;
+    height: 50px;
+    width: 100%;
+    padding: 0;
+    bottom: 0rem;
+    left: 0;
+    right: 0;
+  }
+  &__btn {
+    position: absolute;
     bottom: 2rem;
-    right: 2rem;
+    right: 1rem;
     border: none;
     background: var(--background-color);
     border-radius: 50%;
@@ -163,8 +176,7 @@ export default {
     transition: transform 0.1s ease, box-shadow 0.2s ease;
 
     @media screen and (min-width: 500px) {
-      bottom: 5%;
-      right:13%;
+      // bottom: 5%;
     }
 
     &:focus {

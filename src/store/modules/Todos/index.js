@@ -20,12 +20,12 @@ const mutations = {
   },
 
   REMOVE_TODO (state, payload) {
-    const newState = {
+    const prevState = {
       ...state.todos
     };
-    delete newState[payload.todo_id];
+    delete prevState[payload.todo_id];
     state.todos = {
-      ...newState
+      ...prevState
     };
   },
 
