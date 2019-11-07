@@ -94,7 +94,7 @@ export default {
       const payload = {
         title: this.title.content, 
         list_id: this.list_id
-      }
+      };
       this.$store.dispatch('lists/changeListTitle', payload , { root: true });
       this.title.content = '';
       this.title.editing = false;

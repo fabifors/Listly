@@ -17,7 +17,7 @@ export default {
     sortEnd() {
       this.handleDrag.bool = true;
     },
-    reorder(list, type, listId ) {
+    reorder(list, type, list_id ) {
       switch(type){
         case 'lists': {
           console.log(list);
@@ -31,14 +31,16 @@ export default {
           break;
         }
         case 'todos': {
-          console.log(list);
-          const todosObj = list.reduce((acc, item) => {
+          const todos = list.reduce((acc, item) => {
             const id = item.id;
-            delete item.id;
-            acc[id] = { ...item };
+            acc[id] = true;
             return acc;
           }, {});
-          this.$store.dispatch('todos/reorderTodos', todosObj, { root: true });
+          const payload = {
+            todos,
+            list_id
+          };
+          this.$store.dispatch('lists/reorderTodos', payload, { root: true });
           break;
         }
         default: {

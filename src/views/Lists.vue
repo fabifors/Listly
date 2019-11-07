@@ -10,11 +10,14 @@
         class="search-form"
         @submit.prevent
       >
-        <label for="search" class="sr-only">Search</label>
+        <label
+          for="search"
+          class="sr-only"
+        >Search</label>
         <input 
-          v-model="search" 
+          id="search" 
+          v-model="search"
           type="text"
-          id="search"
           class="search-form__input" 
           placeholder="Search"
         >

@@ -69,6 +69,12 @@ const mutations = {
     state.lists[payload.list_id].todos = {
       ...newState
     };
+  },
+
+  REORDER_TODOS (state, payload) {
+    state.lists[payload.list_id].todos = {
+      ...payload.todos
+    };
   }
 
 };
@@ -176,6 +182,14 @@ const actions = {
       dispatch('storeLists');
       resolve();
     });
+  },
+  
+  reorderTodos ({ commit, dispatch }, payload) {
+    return new Promise((resolve, reject) => {
+      commit('REORDER_TODOS', payload);
+      dispatch('storeLists');
+      resolve();
+    });
   }
 };
 
@@ -199,6 +213,10 @@ const getters = {
       };
     }
     return Object.keys(state.lists).map(getObjectWithKey);
+  },
+
+  getListTodos: state => list_id => {
+    return state.lists[list_id].todos;
   },
 
   getCurrentListTitle: state => {

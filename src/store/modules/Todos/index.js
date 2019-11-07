@@ -131,14 +131,25 @@ const getters = {
     function listTodos (todo) {
       return state.todos[todo].list_id === _list_id;
     } 
-    function getObjectWithKey(key) {
+    function getObjectWithKey(id) {
       return {
-        id: key,
-        ...state.todos[key]
+        id,
+        ...state.todos[id]
       };
     }
     return Object.keys(state.todos).filter(listTodos).map(getObjectWithKey);
   },
+
+  getListTodosFromObj: state => obj => {
+    function getTodos(id) {
+      return {
+        id,
+        ...state.todos[id]
+      };
+    }
+    return Object.keys(obj).map(getTodos);
+  },
+
   getAllTodos: state => {
     function getObjectWithKey (key) {
       return {

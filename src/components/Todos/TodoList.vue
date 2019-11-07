@@ -56,9 +56,11 @@ export default {
   },
   mixins: [handleDragging],
   computed: {
-    ...mapGetters({ currentList: 'lists/getCurrentList' }),
+    ...mapGetters(
+      { currentList: 'lists/getCurrentList' }
+    ),
     getListTodos () {
-      return this.$store.getters['todos/getListTodos'](this.currentList.id);
+      return this.$store.getters['todos/getListTodosFromObj'](this.currentList.todos);
     }
   }
 };
