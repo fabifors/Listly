@@ -75,7 +75,7 @@ export default {
     color:var(--text-color-light);
     padding: 1em 1.25em;
     background-image: linear-gradient(to right bottom, var(--text-color-dark--muted), var(--text-color-dark));
-    clip-path: circle(0% at 97% 87%);
+    clip-path: circle(0% at 98% 75%);
     transition: clip-path 0.5s;
     height: 100%;
     padding: 2rem 1.5rem;
