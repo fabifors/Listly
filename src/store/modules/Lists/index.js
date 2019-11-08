@@ -52,7 +52,7 @@ const mutations = {
     state.lists[payload.list_id].updated = payload.timestamp;
   },
 
-  // ADD OR REMOVE TWO WAY CONNECTION TO TODOS
+  // ADD OR REMOVE TWO WAY CONNECTION WITH TODOS
   ADD_TODO (state, payload) {
     const prevState = state.lists[payload.list_id].todos;
     state.lists[payload.list_id].todos = {
@@ -153,6 +153,7 @@ const actions = {
       resolve();
     });
   },
+
   // TODO's
   addTodo ({ commit, dispatch }, payload) {
     return new Promise((resolve, reject)=> {
