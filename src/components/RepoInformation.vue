@@ -57,8 +57,10 @@ export default {
   position: fixed;
   bottom: 0rem;
   right: 0rem;
+  pointer-events: none;
 
   &__icon {
+    pointer-events: all;
     z-index: 999;
     color: var(--text-color-dark--muted);
     position: absolute;
@@ -120,6 +122,7 @@ export default {
   }
 
   .hover-active {
+    pointer-events: all;
     clip-path: circle(75% at 50% 50%);
   }
 }
