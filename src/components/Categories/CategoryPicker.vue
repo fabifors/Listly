@@ -80,6 +80,21 @@ export default {
     },
     setNewCategory () {
       this.category.id = '';
+      const foundCategory = this.categories.find(category => {
+        const existingCat = category.name.toLowerCase();
+        const newCat = this.category.name.toLowerCase();
+        if(newCat.length === existingCat.length) {
+          if (newCat === existingCat) {
+            return category;
+          }
+        }
+      });
+      if (foundCategory) {
+        this.category = {
+          id: foundCategory.id,
+          name: foundCategory.name
+        };
+      }
       this.$emit('set-category', this.category);
     }
   }
