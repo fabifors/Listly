@@ -1,31 +1,31 @@
 <template>
-    <div 
-      class="info-container"  
-      @mouseleave="hoverEnd()"
-    >
-      <i 
-        class="info-container__icon far fa-info-circle" 
-        @mouseover="hoverStart()" 
-      />
-      <div :class="`info-container__inner ${state.hover ? 'hover-active': null}`">
-        <h3>About this project</h3>
-        <p>
-          This project was created by 
-          <a 
-            href="https://github.com/fabifors" 
-            target="_blank"
-          >
-            fabifors
-          </a> and here is 
-          <a 
-            href="https://github.com/fabifors/vue-todo" 
-            target="_blank"
-          >
-            the link for the public repo
-          </a>
-        </p>
-      </div>
+  <div 
+    class="info-container"  
+    @mouseleave="hoverEnd()"
+  >
+    <i 
+      class="info-container__icon far fa-info-circle" 
+      @mouseover="hoverStart()" 
+    />
+    <div :class="`info-container__inner${state.hover ? ' hover-active': ''}`">
+      <h3>About this project</h3>
+      <p>
+        This project was created by 
+        <a 
+          href="https://github.com/fabifors" 
+          target="_blank"
+        >
+          fabifors
+        </a> and here is 
+        <a 
+          href="https://github.com/fabifors/vue-todo" 
+          target="_blank"
+        >
+          the link for the public repo
+        </a>
+      </p>
     </div>
+  </div>
 </template>
 
 <script>
@@ -53,29 +53,41 @@ export default {
 
 .info-container {
   width: 100%;
-  padding: 1rem;
-  position: relative;
+  // padding: 1rem;
+  position: fixed;
+  bottom: 0rem;
+  right: 0rem;
+  pointer-events: none;
 
   &__icon {
+    pointer-events: all;
     z-index: 999;
-    color: slateblue;
+    color: var(--text-color-dark--muted);
     position: absolute;
-    right: 24px;
-    bottom: 23px;
+    right: 0.5rem;
+    bottom: 0.5rem;
     font-size: 1.5rem;
+    padding: 0.5rem;
+    border: 2px dashed var(--text-color-dark--muted);
+    border-radius: 10px;
   }
 
   &__inner {
-    border-radius: 5px;
-    color: #fff;
+    border-radius: 0px;
+    color:var(--text-color-light);
     padding: 1em 1.25em;
-    background-image: linear-gradient(to right bottom, rgb(138, 124, 231), rgb(86, 71, 184));
-    clip-path: circle(0% at 97% 87%);
+    background-image: linear-gradient(to right bottom, var(--text-color-dark--muted), var(--text-color-dark));
+    clip-path: circle(0% at 98% 75%);
     transition: clip-path 0.5s;
     height: 100%;
+    padding: 2rem 1.5rem;
+
+    h3 {
+      margin-bottom: 0.5rem;
+    }
 
     a {
-      color: rgb(203, 225, 247);
+      color: var(--text-color-light);
       font-weight: 600;
       display: inline-block;
       text-decoration: none;
@@ -91,14 +103,15 @@ export default {
         margin-left: 7px;
         margin-top: -7px;
         border-radius: 5px;
-        background: rgba(255, 255, 255, 0.2);
+        background: var(--background-color);
+        opacity: 0.2;
         transition: transform 300ms, padding 200ms ease 200ms;
       }
 
       &:hover {
         padding-left: 0.5rem;
         padding-right: 0.5rem;
-        color: rgb(138, 231, 129);
+        color: hsl(283, 93%, 80%);
         
         &::after {
           transform: translateX(-17px) translateY(-12px);
@@ -109,6 +122,7 @@ export default {
   }
 
   .hover-active {
+    pointer-events: all;
     clip-path: circle(75% at 50% 50%);
   }
 }
