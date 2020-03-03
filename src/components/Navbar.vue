@@ -18,14 +18,14 @@
               Lists
             </router-link>
           </li>
-          <li>
+          <!-- <li>
             <router-link
               to="/settings"
               class="navigation__list__item"
             >
               Settings
             </router-link>
-          </li>
+          </li> -->
         </ul>
       </nav>
     </div>
