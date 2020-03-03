@@ -20,6 +20,7 @@ export default new Router({
           console.log(store.getters['lists/getCurrentList']);
           next('/lists');
         } else {
+          console.log('Should have current list');
           next();
         }
       }

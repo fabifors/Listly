@@ -20,10 +20,22 @@ const mutations = {
   },
 
   REMOVE_TODO (state, payload) {
-    const prevState = {
-      ...state.todos
-    };
+    const prevState = { ...state };
     delete prevState[payload.todo_id];
+    state.todos = {
+      ...prevState
+    };
+  },
+
+  NUKE_TODOS (state, payload) {
+    const prevState = {
+      ...state
+    };
+    for (let key in prevState) {
+      if (prevState[key].list_id === payload.list_id) {
+        delete prevState[key];
+      }
+    }
     state.todos = {
       ...prevState
     };
@@ -83,6 +95,12 @@ const actions = {
       commit('REMOVE_TODO', payload);
       dispatch('storeTodos');
       resolve();
+    });
+  },
+
+  nukeTodos ({ commit , dispatch }, payload) {
+    return new Promise((resolve, reject) => {
+      
     });
   },
   

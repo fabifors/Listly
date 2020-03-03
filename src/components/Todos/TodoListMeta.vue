@@ -40,9 +40,11 @@ export default {
   },
   computed: {
     listCategoryName () {
-      const cat = this.$store.getters['categories/getCategoryById'](this.list.category);
-      if (cat) {
-        return cat.name;
+      const categories = this.$store.getters['categories/getCategoryById'];
+      if (this.list.category) {
+        return categories(this.list.category)
+          ? categories(this.list.category).name
+          : 'error';
       }
       return 'No category';
     }
@@ -57,7 +59,8 @@ export default {
         this.$router.replace('/lists');
         this.$store.dispatch('lists/removeList', this.list.id, { root: true });
       }
-    }
+    },
+    
   }
 };
 </script>

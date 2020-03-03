@@ -11,7 +11,10 @@
         v-if="popup"
         class="popup-wrapper"
       >
-        <form class="popup">
+        <form
+          class="popup"
+          @submit.prevent="createNewList()"
+        >
           <h2 class="popup__title">
             Create new list
           </h2>
@@ -23,14 +26,15 @@
             <input
               id="newListTitle"
               v-model="title"
+              autocomplete="off"
               placeholder="My list"
               class="popup__input"
             >
           </div>
-          <category-picker @picked-category="setCategory" />
+          <category-picker @set-category="onSetCategory" />
           <button
             class="popup__button"
-            @click="createNewList()"
+            type="submit"
           >
             Create List
           </button>
@@ -50,7 +54,7 @@
 </template>
 
 <script>
-import CategoryPicker from './CategoryPicker';
+import CategoryPicker from '../Categories/CategoryPicker';
 
 export default {
   name: 'NewList',
@@ -68,7 +72,7 @@ export default {
     };
   },
   methods: {
-    setCategory (category) {
+    onSetCategory (category) {
       this.category = { ...category };
     },
 
@@ -76,15 +80,19 @@ export default {
       if (!this.title) {
         this.title = 'My list';
       }
+      
       const payload = {
         title: this.title,
-        category_id: this.category.id
+        category: this.category
       };
-      this.$store.dispatch('lists/addList', payload, { root: true }).then(() => {
-        this.title = '';
-        this.category = { name: '', id: '' };
-        this.popup = false;
-      });
+
+      this.$store.dispatch('lists/addList', payload, { root: true })
+        .then(() => {
+          this.title = '';
+          this.popup = false;
+        }).catch(err => {
+          throw Error(err);
+        });
     },
 
     handleOpenPopup () {

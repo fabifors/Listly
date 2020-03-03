@@ -17,6 +17,7 @@ export default {
   },
   lists: {
     'as2-asd2-asd3-k2-asd1': {
+      id: 'as2-asd2-asd3-k2-asd1',
       title: 'An Awesome List',
       category: 'kas2d-ad-a2d-a2d-2ad',
       todos: {

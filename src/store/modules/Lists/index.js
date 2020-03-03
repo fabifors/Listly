@@ -9,16 +9,17 @@ const state = {
 const mutations = {
   ADD_LIST (state, payload) {
     const timestamp = Date.now();
+    const prevState = { ...state.lists };
     state.lists = {
       [payload.list_id]: {
         title: payload.title,
         id: payload.list_id,
-        category: payload.category_id,
+        category: '',
         todos: {},
         created: timestamp,
         updated: timestamp
       },
-      ...state.lists,
+      ...prevState,
     };
   },
 
@@ -40,8 +41,8 @@ const mutations = {
     state.lists[list_id].title = title;
   },
 
-  UPDATE_LIST_CATEGORY (state, { list_id, cat_id }) {
-    state.lists[list_id].category = cat_id;
+  UPDATE_LIST_CATEGORY (state, { list_id, category_id }) {
+    state.lists[list_id].category = category_id;
   },
 
   REPLACE_LISTS (state, payload) {
@@ -101,8 +102,10 @@ const actions = {
   addList ({ commit, dispatch }, payload) {
     return new Promise((resolve, reject)=> {
       const list_id = hash();
-      payload.list_id = list_id;
-      commit('ADD_LIST', payload);
+      commit('ADD_LIST', {
+        ...payload,
+        list_id
+      });
       dispatch('storeLists');
       resolve();
     });
@@ -117,9 +120,34 @@ const actions = {
     });
   },
 
-  changeList ({ commit }, list_id) {
-    return new Promise((resolve, reject)=> {
+  changeList ({ dispatch, commit }, list_id) {
+    return new Promise((resolve, reject) => {
       commit('CHANGE_ACTIVE_LIST', list_id);
+      dispatch('storeLists');
+      resolve();
+    });
+  },
+
+  updateListCategory ({ dispatch, commit }, payload) {
+    return new Promise((resolve, reject) => {
+      commit('UPDATE_LIST_CATEGORY', payload);
+      dispatch('storeLists');
+      resolve();
+    });
+  },
+
+  removeCategoryFromLists ({ dispatch, commit, state  }, payload) {
+    return new Promise((resolve, reject) => {
+      console.log(state.lists);
+      console.log(payload);
+      for (let key in state.lists) {
+        let list = state.lists[key];
+        if (list.category === payload.category_id) {
+          console.log('Found list');
+          commit('UPDATE_LIST_CATEGORY', { list_id: list.id, category_id: null});
+        }
+      }
+      dispatch('storeLists');
       resolve();
     });
   },
@@ -186,6 +214,7 @@ const getters = {
   },
 
   getCurrentList: state => {
+    if(!state.currentList) return false;
     return {
       id: state.currentList,
       ...state.lists[state.currentList]

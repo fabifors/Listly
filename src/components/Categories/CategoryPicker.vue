@@ -13,29 +13,28 @@
       <input
         id="categoryInput"
         v-model="category.name"
-        placeholder="Choose or create"
+        placeholder="Choose or enter new category name"
+        autocomplete="off"
         class="category-picker__input category-picker__input--with-icon"
-        @change="handleOpenCategories()"
+        @input="setNewCategory"
       >
-      <i 
-        :class="`fad fa-caret-down input-dropdown-icon ${open ? 'input-dropdown-icon--active' : ''}`"
-        @click="!open ? handleOpenCategories() : handleCloseCategories()"
-      />
     </div>
     <transition-group
-      v-if="open"
+      v-if="filteredCategories.length > 0"
       name="animation"
       tag="ul"
       class="category-picker__list"
       appear
     >
       <li 
-        v-for="category in filteredCategories"
-        :key="category.id"
-        class="category-picker__list__item"
-        @click="chooseCategory({ name: category.name, id: category.id })"
+        v-for="cat in filteredCategories"
+        :key="cat.id"
+        :class="`category-picker__list__item filter-tag
+          ${category.id === cat.id ? 'active': ''}
+        `"
+        @click="chooseCategory({ name: cat.name, id: cat.id })"
       >
-        {{ category.name }}
+        {{ cat.name }}
       </li>
     </transition-group>
   </div>
@@ -48,11 +47,11 @@ export default {
   name: 'CategoryPicker',
   data: () => {
     return {
+      open: false,
       category: {
         name: '',
         id: ''
-      },
-      open: false
+      }
     };
   },
   computed: {
@@ -61,54 +60,50 @@ export default {
     }),
     filteredCategories () {
       return Object.keys(this.categories)
-        .map(el => this.categories[el])
-        .filter(cat => cat.name.toLowerCase().includes(this.category.name.toLowerCase()));
-    }
+        .map(id => this.categories[id])
+        .filter(category => {
+          const source = category.name.toLowerCase();
+          const newName = this.category.name.toLowerCase();
+          if (source.includes(newName)) {
+            return category;
+          }
+        });
+    },
   },
   methods: {
-    handleOpenCategories () {
-      if (!this.open) {
-        this.open = true;
-        return;
-      }
-    },
-    handleCloseCategories () {
-      if (this.open) {
-        this.open = false;
-        return;
-      }
-    },
-    chooseCategory ({name, id}) {
+    chooseCategory (payload) {
       this.category = {
-        name,
-        id
+        name: payload.name,
+        id: payload.id
       };
-      this.$emit('picked-category', this.category);
-      this.open = false;
+      this.$emit('set-category', this.category);
     },
-    createNewCategory () {
-      
+    setNewCategory () {
+      this.category.id = '';
+      this.$emit('set-category', this.category);
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+
 .category-picker__list {
+  transition: all 0.3s ease-in;
+  height: 0;
   position: relative;
-  min-height: 48px;
 }
 
 .animation {
   transition: all 1s;
   &-enter {
   opacity: 0;
-  transform: scale(0.4, 0.4);
+  transform: translateY(20px)
   }
 
   &-leave-to {
     opacity: 0;
-    transform: scale(0.4, 0.4);
+    transform: translateY(20px)
   }
 
   &-enter-active {
@@ -127,17 +122,33 @@ export default {
   }
 }
 
+
 .category-picker {
   margin-bottom: 1rem;
   &__list {
+    display: flex;
     min-height: 50px;
     overflow: visible;
     padding: 0.5rem 0;
     list-style: none;
-    &__item {
-      padding: 0.25rem 0.75rem;
-      &:not(:last-child) {
-        margin-bottom: 0.25rem;
+
+    .filter-tag {
+      font-weight: 600;
+      padding: 0.4rem 0.6rem;
+      margin-right: 0.25rem;
+      border-radius: 5px;
+      transition: transform 0.35s,background 0.1s ease-in, color 0.1s ease-in;
+      cursor: pointer;
+      &:hover:not(.active) {
+        background: var(--text-color-muted--light);
+      }
+
+      &.active {
+        background: var(--text-color-muted--light);
+        // color: var(--text-color-light);
+        &:hover {
+          background: var(--white-color);
+        }
       }
     }
   }
@@ -176,6 +187,15 @@ export default {
       color: var(--text-color-medium-lighter);
       font-weight: 600;
       letter-spacing: 0.5px;
+    }
+
+    &__button {
+      padding: 0 1rem;
+      font-weight: 600;
+      background: var(--background-color);
+      // color: var(--white-color);
+      border-radius: 0 5px 5px 0;
+      border: none;
     }
   }
   .input-icon {

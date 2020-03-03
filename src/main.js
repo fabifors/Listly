@@ -7,12 +7,16 @@ import { VueMasonryPlugin } from 'vue-masonry';
 
 Vue.config.productionTip = false;
 Vue.use(VueMasonryPlugin);
+
+
+/**
+ * Defining vue filters
+ */
 Vue.filter('fromToday', function (time) {
   if(!time) return '';
   time = moment(time).fromNow();
   return time;
 });
-
 
 Vue.filter('listCategory', function (lists, categories) {
   const result = [];
@@ -25,7 +29,6 @@ Vue.filter('listCategory', function (lists, categories) {
       }
     }
   });
-  console.log('Main,js:', result);
   return result;
 });
 

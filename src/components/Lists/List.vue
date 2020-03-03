@@ -1,5 +1,5 @@
 <template>
-  <article 
+  <article
     v-if="list"
     :class="`todo-list ${dragging ? 'no-transition': ''}`"
   >
@@ -13,8 +13,10 @@
           class="handle fas fa-grip-vertical"
         />{{ list.title }}
       </h4>
-      <span class="todo-list__header__category"> 
-        {{ list.category ? categories(list.category).name: 'No category' }}
+      <span
+        class="todo-list__header__category"
+      > 
+        {{ listCategoryName }}
       </span>
     </header>
     
@@ -23,11 +25,15 @@
     <footer class="todo-list__footer">
       <div class="todo-list__footer__left">
         <span class="todo-list__footer__label">created</span>
-        <span class="todo-list__footer__date">{{ list.created | fromToday }}</span>
+        <span class="todo-list__footer__date">
+          {{ list.created | fromToday }}
+        </span>
       </div>
       <div class="todo-list__footer__right">
         <span class="todo-list__footer__label">edited</span>
-        <span class="todo-list__footer__date">{{ list.updated | fromToday }}</span>
+        <span class="todo-list__footer__date">
+          {{ list.updated | fromToday }}
+        </span>
       </div>
     </footer>
   </article>
@@ -63,20 +69,28 @@ export default {
       categories: 'categories/getCategoryById'
     }),
     getFirstFive () {
-      if(this.list.id){
+      if (this.list.id){
         const _list_id = this.list.id;
         const list = this.$store.getters['todos/getListTodos'](_list_id);
         function sortByDone (a, b) {
           return a.done - b.done;
         }
         list.sort(sortByDone);
-        if(list.length > 5) {
+        if (list.length > 5) {
           list.length = 5;
           return list;
         }
         return list;
       }
       return [];
+    },
+    listCategoryName() {
+      if (this.list.category) {
+        return this.categories(this.list.category)
+          ? this.categories(this.list.category).name
+          : 'error';
+      }
+      return 'No category';
     }
   },
   methods: {

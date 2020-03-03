@@ -1,21 +1,26 @@
 import INITIAL_STATE from '@/INITIAL_STATE';
+import hash from '@/utilities/hash';
 
 const state = {
   categories: {},
 };
 
 const mutations = {
-  ADD_CATEGORY (state, { name, catId }) {
-    state.categories[catId] = {
-      id: catId,
-      name,
-      lists: {}
+  ADD_CATEGORY (state, { category_name, category_id }) {
+    const prevState = { ...state.categories };
+    state.categories= {
+      [category_id] : {
+        id: category_id,
+        name: category_name,
+        lists: {}
+      },
+      ...prevState
     };
   },
 
   ADD_LIST_TO_CATEGORY (state, { list_id, category_id }) {
     const prevState = {
-      ...state.categories
+      ...state.categories[category_id].lists
     };
     state.categories[category_id].lists = {
       [list_id]: true,
@@ -33,22 +38,22 @@ const mutations = {
     };
   },
 
-  DELETE_CATEGORY (state, id) {
+  DELETE_CATEGORY (state, { category_id }) {
     const prevState = {
       ...state.categories
     };
-    delete prevState[id];
+    delete prevState[category_id];
     state.categories = {
       ...prevState
     };
   },
 
-  UPDATE_CATEGORY_NAME (state, { name, catId }) {
-    state.categories[catId].name = name;
+  UPDATE_CATEGORY_NAME (state, { name, category_id }) {
+    state.categories[category_id].name = name;
   },
 
   REPLACE_CATEGORIES (state, payload) {
-    state.categories = payload;
+    state.categories = { ...payload };
   }
 };
 
@@ -70,6 +75,14 @@ const actions = {
     return new Promise((resolve, reject) => {
       commit('ADD_CATEGORY', payload);
       dispatch('storeCategories');
+      resolve(payload);
+    });
+  },
+
+  addListToCategory ({ commit, dispatch }, payload) {
+    return new Promise((resolve, reject) => {
+      commit('ADD_LIST_TO_CATEGORY', payload);
+      dispatch('storeCategories');
       resolve();
     });
   },
@@ -77,6 +90,14 @@ const actions = {
   removeListFromCategory ({ commit, dispatch }, payload) {
     return new Promise((resolve, reject) => {
       commit('REMOVE_CATEGORY_FROM_LIST', payload);
+      dispatch('storeCategories');
+      resolve();
+    });
+  },
+
+  deleteCategory ({commit, dispatch}, payload) {
+    return new Promise((resolve, reject) => {
+      commit('DELETE_CATEGORY', payload);
       dispatch('storeCategories');
       resolve();
     });
