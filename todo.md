@@ -4,8 +4,12 @@
   [] This view should let the user remove and edit categories
   [] This should maybe be a modal component?
 
-[] Create a modal popup component for the alert boxes
-  [] This component should appear when the user press delete on a list, or category
+[X] Create a modal popup component for the alert boxes
+  [/] This component should appear when the user press delete on a list, or category
+
+[/] Animations that makes sense
+  [x] Page transitions that feels just right
+  [] Need to fix the add list button and info component when transitioning between pages
 
 [] Create an error component that takes messages from failed fetch, promises etc.
 
