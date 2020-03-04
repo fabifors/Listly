@@ -12,8 +12,8 @@
       <div class="alert-component__top__content">
         <h3>{{ alert.title }}</h3>
         <!-- eslint-disable-next-line vue/no-v-html -->
-        <p v-if="alert.information.first && alert.information.after">
-          {{ alert.information.first }}<span class="item-name">{{ item.title }}</span>? {{ alert.information.after }}
+        <p v-if="alert.information.before && alert.information.after">
+          {{ alert.information.before }}<span class="item-name">{{ item.title }}</span>? {{ alert.information.after }}
         </p>
       </div>
     </div>
@@ -49,6 +49,11 @@ export default {
       type: String,
       required: true,
     },
+    content: {
+      type: Object,
+      required: false,
+      default: () => null
+    },
     item: {
       type: Object,
       required: false,
@@ -63,10 +68,10 @@ export default {
 
   computed: {
     alert: function () {
-      const content = {
+      let content = {
         information: {
           text: '',
-          first: '',
+          before: '',
           after: ''
         },
         icon: {
@@ -80,9 +85,13 @@ export default {
       };
       switch (this.type) {
         case 'list': {
+          if (this.text) {
+            content = this.content;
+            break;
+          }
           if (this.action === 'delete') {
             content.title = 'Deleting list';
-            content.information.first = 'Are you sure you would like to delete the list ';
+            content.information.before = 'Are you sure you would like to delete the list ';
             content.information.after = 'This action is nonreversable.';
             content.icon.color = 'danger';
             content.actions.yes = 'Delete it!';
@@ -93,7 +102,7 @@ export default {
         case 'category': {
           if (this.action === 'delete') {
             content.title = 'Deleting Category';
-            content.information.first = 'Are you sure you would like to delete the category';
+            content.information.before = 'Are you sure you would like to delete the category';
             content.information.after = 'The lists that does are a part of this category will still be untouched, but will have their category reset.';
           }
           break;
