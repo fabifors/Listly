@@ -1,23 +1,16 @@
-## Todos
-Actions needed to finish version 2.. 
-at least for now...
+## TOODS!
 
-List: 
-* Create category before list
-* ADD_LIST should have category in payload.
-* Categories/addListToCategory will react on ADD_LIST
-* lists/updateListCategory will react on ADD_LIST_TO_CATEGORY
+[] Create a view for the categories
+  [] This view should let the user remove and edit categories
+  [] This should maybe be a modal component?
 
-* Add events to moderator
-* Finalize category picker component
-  * Add button or other indication that a new category will be created
-  * Fix the form to not send on enter
-* Test feature
+[] Create a modal popup component for the alert boxes
+  [] This component should appear when the user press delete on a list, or category
 
-## When user write a category name
-UX steps in categorypicker component
+[] Create an error component that takes messages from failed fetch, promises etc.
 
-* Check if it matches a category name that exsist.
-* "Select" (css) the first matching item in category list
-* if user press enter => pick "selected" category
-  * if no category is selected => go and create a new category
+
+## Drag to delete? 
+[] This could be the standard shortcut to delete filters
+[] When dragged, an icon appears to the right
+[] When the item is above the icon and dropped it will trigger the alert component
