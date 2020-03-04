@@ -138,12 +138,9 @@ const actions = {
 
   removeCategoryFromLists ({ dispatch, commit, state  }, payload) {
     return new Promise((resolve, reject) => {
-      console.log(state.lists);
-      console.log(payload);
       for (let key in state.lists) {
         let list = state.lists[key];
         if (list.category === payload.category_id) {
-          console.log('Found list');
           commit('UPDATE_LIST_CATEGORY', { list_id: list.id, category_id: null});
         }
       }
