@@ -8,7 +8,7 @@
 
 <script>
 export default {
-  name: 'Settings',
+  name: 'SettingsPage',
   data: () => {
     return {};
   }

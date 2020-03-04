@@ -116,7 +116,7 @@ export default {
     'sorted-list': SortedList,
     'list-component': ListComponent,
     'new-list': NewList,
-    'category-filter': CategoryFilter
+    'category-filter': CategoryFilter,
   },
   mixins: [handleResize, handleDragging],
   data: () => {
