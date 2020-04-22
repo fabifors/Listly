@@ -2,7 +2,15 @@
   <div id="app">
     <div class="main-wrapper">
       <nav-bar />
-      <router-view />
+      <transition
+        name="page"
+        mode="out-in"
+        @beforeLeave="beforeLeave"
+        @enter="enter"
+        @afterEnter="afterEnter"
+      >
+        <router-view />
+      </transition>
     </div>
   </div>
 </template>
@@ -15,11 +23,32 @@ export default {
   components: {
     'nav-bar': Navbar,
   },
+  data: () => {
+    return {
+      prevHeight: 0,
+    };
+  },
   created() {
     this.$store.dispatch('lists/initLists', { root: true });
     this.$store.dispatch('todos/initTodos', { root: true });
     this.$store.dispatch('categories/initCategories', { root: true });
-    // this.$store.dispatch('init', { root: true });
+  },
+  methods: {
+    beforeLeave(element) {
+      this.prevHeight = getComputedStyle(element).height;
+    },
+    enter(element) {
+      const { height } = getComputedStyle(element);
+
+      element.style.height = this.prevHeight;
+
+      setTimeout(() => {
+        element.style.height = height;
+      });
+    },
+    afterEnter(element) {
+      element.style.height = 'auto';
+    },
   }
 };
 </script>
@@ -33,6 +62,7 @@ export default {
   --text-color-light: hsl(251, 20%, 94%);
   --text-color-dark--muted: hsl(251, 13%, 52%);
   --background-color: hsl(251, 42%, 87%);
+  --background-color--lighter: hsl(251, 42%, 90%);
   --background-color-light: hsl(251, 20%, 94%);
   --white-color: hsl(240, 25%, 98%);
 
@@ -50,17 +80,17 @@ export default {
 }
 
 .sr-only {
-	border: 0 !important;
-	clip: rect(1px, 1px, 1px, 1px) !important; /* 1 */
-	-webkit-clip-path: inset(50%) !important;
-		clip-path: inset(50%) !important;  /* 2 */
-	height: 1px !important;
-	margin: -1px !important;
-	overflow: hidden !important;
-	padding: 0 !important;
-	position: absolute !important;
-	width: 1px !important;
-	white-space: nowrap !important;            /* 3 */
+  border: 0 !important;
+  clip: rect(1px, 1px, 1px, 1px) !important; /* 1 */
+  -webkit-clip-path: inset(50%) !important;
+    clip-path: inset(50%) !important;  /* 2 */
+  height: 1px !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  position: absolute !important;
+  width: 1px !important;
+  white-space: nowrap !important;            /* 3 */
 }
 
 input[type="text"]:focus{
@@ -69,6 +99,38 @@ input[type="text"]:focus{
 }
 
 body { margin: 0;}
+
+.page-enter-active {
+  height: 100%;
+  animation: page-enter 0.4s;
+}
+.page-leave-active {
+  height: 100%;
+  animation: page-leave 0.4s;
+}
+
+
+@keyframes page-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(10%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+}
+
+@keyframes page-leave {
+  0% {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(10%);
+  }
+}
 
 #app {
   font-family: 'Proxima Nova', Helvetica, Arial, sans-serif;

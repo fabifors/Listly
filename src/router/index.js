@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Todos from '../views/Todos';
-import Lists from '../views/Lists';
-import Settings from '../views/Settings';
+import TodosPage from '../views/TodosPage';
+import MyLists from '../views/MyLists';
+import SettingsPage from '../views/SettingsPage';
 import store from '@/store/index.js';
 
 import Testing from '@/views/Testing';
@@ -13,8 +13,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Todos',
-      component: Todos,
+      name: 'TodosPage',
+      component: TodosPage,
       beforeEnter(to, from, next) {
         if(!store.getters['lists/getCurrentList']) {
           console.log(store.getters['lists/getCurrentList']);
@@ -32,13 +32,13 @@ export default new Router({
     },
     {
       path: '/lists',
-      name: 'Lists',
-      component: Lists
+      name: 'MyLists',
+      component: MyLists
     },
     {
       path: '/settings',
-      name: 'Settings',
-      component: Settings
+      name: 'SettingsPage',
+      component: SettingsPage
     }
   ]
 });
