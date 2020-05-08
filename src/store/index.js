@@ -4,6 +4,7 @@ import Vuex from 'vuex';
 import INITIAL_STATE from '@/INITIAL_STATE';
 import router from '@/router';
 
+import Auth from './modules/Auth';
 import Lists from './modules/Lists';
 import Todos from './modules/Todos';
 import Categories from './modules/Categories';
@@ -51,6 +52,7 @@ export default new Vuex.Store({
     todos: Todos,
     categories: Categories,
     lists: Lists,
+    auth: Auth,
   },
 
   plugins: [Moderator]

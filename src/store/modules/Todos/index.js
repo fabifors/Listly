@@ -1,6 +1,7 @@
 import hash from '@/utilities/hash';
 import INITIAL_STATE from '../../../INITIAL_STATE';
 import view from './test.vue';
+import * as Firebase from 'firebase';
 
 const state = {
   todos: {},
@@ -64,7 +65,8 @@ const mutations = {
 };
 
 const actions = {
-  initTodos ({ commit }) {
+  initTodos ({ commit }, uid) {
+    console.log(uid);
     if (!localStorage.todos) {
       commit('REPLACE_TODOS', INITIAL_STATE.todos);
       return;

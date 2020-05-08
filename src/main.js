@@ -5,9 +5,11 @@ import router from './router/index.js';
 import * as moment from 'moment';
 import { VueMasonryPlugin } from 'vue-masonry';
 
+/**
+ * Vue Plugins
+ */
 Vue.config.productionTip = false;
 Vue.use(VueMasonryPlugin);
-
 
 /**
  * Defining vue filters

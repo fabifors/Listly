@@ -1,8 +1,19 @@
 import hash from '@/utilities/hash';
 
 export default function Moderator (store) {
-  store.subscribe(({type, payload}) => {
+  store.subscribe(({ type, payload }) => {
     switch(type) {
+      /**
+       * React on all the Auth module changes
+       */
+      case 'auth/SET_USER': {
+        // console.log(payload);
+        if (payload && payload.user && payload.user.uid) {
+          return store.dispatch('todos/initTodos', payload.user.uid, { root : true });
+        } 
+        break;
+      }
+
       /**
        * React on all changes that happens in the todo module
        */
@@ -79,10 +90,3 @@ export default function Moderator (store) {
     }
   });
 }
-
-/*
-  compontent => create list
-  if(category)
-    component => create or update category
-    list module => update list category
-*/

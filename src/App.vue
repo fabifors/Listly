@@ -29,8 +29,9 @@ export default {
     };
   },
   created() {
+    this.$store.dispatch('auth/init', { root : true });
     this.$store.dispatch('lists/initLists', { root: true });
-    this.$store.dispatch('todos/initTodos', { root: true });
+    this.$store.dispatch('todos/initTodos', 'uid', { root: true });
     this.$store.dispatch('categories/initCategories', { root: true });
   },
   methods: {

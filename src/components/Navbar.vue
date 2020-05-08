@@ -10,22 +10,17 @@
     <div class="navbar__right">
       <nav class="navigation">
         <ul class="navigation__list">
-          <li>
+          <li
+            v-for="link in navLinks"
+            :key="link.path"
+          >
             <router-link
-              to="/lists"
-              class="navigation__list__item"
+              :to="link.path"
+              :class="link.type === 'link' ? 'navigation__list__item' : 'navigation__list__button'"
             >
-              Lists
+              {{ link.label }}
             </router-link>
           </li>
-          <!-- <li>
-            <router-link
-              to="/settings"
-              class="navigation__list__item"
-            >
-              Settings
-            </router-link>
-          </li> -->
         </ul>
       </nav>
     </div>
@@ -37,7 +32,25 @@
 export default {
   name: 'Navbar',
   data: () => {
-    return {};
+    return {
+      navLinks: [
+        {
+          label: 'Lists',
+          path: '/lists',
+          type: 'link',
+        },
+        {
+          label: 'Settings',
+          path: '/settings',
+          type: 'link'
+        },
+        {
+          label: 'Login',
+          path: '/login',
+          type: 'button',
+        },
+      ]
+    };
   }
 };
 </script>
@@ -84,6 +97,22 @@ export default {
 
           &:not(:first-child) {
             margin-left: 1rem;
+          }
+        }
+
+        &__button {
+          border-radius: 3px;
+          padding: 0.5rem 0.75rem;
+          color: var(--text-color-dark--muted);
+          background-color: var(--text-color-light);
+          text-decoration: none;
+          font-family: 'Proxima Nova', Helvetica, Arial, sans-serif;
+          font-weight: 600;
+          transition: color 200ms ease-in, background 200ms ease-in;
+
+          &:hover {
+            color: var(--text-color-light);
+            background-color: var(--text-color-dark--muted);
           }
         }
         
