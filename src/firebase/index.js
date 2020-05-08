@@ -32,7 +32,6 @@ class Firebase {
   signOutUser () {
     return new Promise( async (resolve, reject) => {
       const response = await firebase.auth().signOut();
-      console.log(response);
       resolve(response);
     });
   }

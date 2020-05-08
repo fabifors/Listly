@@ -57,7 +57,6 @@ const router = new Router({
 router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   const isLoggedIn = await Firebase.getCurrentAuthStatus();
-  console.log('isLoggedIn', isLoggedIn);
   if (requiresAuth && !isLoggedIn) {
     next({ path: '/login' });
   } else {

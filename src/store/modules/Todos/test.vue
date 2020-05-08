@@ -90,7 +90,6 @@ export default {
 
     markTodo (todo_id) {
       const todo = this.todosByList.find(todo => todo.id === todo_id);
-      console.log(todo);
       if (todo) {
         if (!todo.done) this.$store.dispatch('todos/markDone', todo.id);
         if (todo.done) this.$store.dispatch('todos/unmarkDone', todo.id);

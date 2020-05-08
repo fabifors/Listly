@@ -7,7 +7,6 @@ export default function Moderator (store) {
        * React on all the Auth module changes
        */
       case 'auth/SET_USER': {
-        // console.log(payload);
         if (payload && payload.user && payload.user.uid) {
           return store.dispatch('todos/initTodos', payload.user.uid, { root : true });
         } 
