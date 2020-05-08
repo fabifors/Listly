@@ -7,7 +7,6 @@
       </page-fade-in>
       <!-- Take this list of components from the route -->
       <!-- <actions :components="[new-list, edit-menu]" /> -->
-      {{ path }}
     </div>
   </div>
 </template>
