@@ -2,55 +2,33 @@
   <div id="app">
     <div class="main-wrapper">
       <nav-bar />
-      <transition
-        name="page"
-        mode="out-in"
-        @beforeLeave="beforeLeave"
-        @enter="enter"
-        @afterEnter="afterEnter"
-      >
+      <page-fade-in>
         <router-view />
-      </transition>
+      </page-fade-in>
+      <!-- Take this list of components from the route -->
+      <!-- <actions :components="[new-list, edit-menu]" /> -->
+      {{ path }}
     </div>
   </div>
 </template>
 
 <script>
 import Navbar from './components/Navbar';
+import PageFadeIn from './components/Transitions/PageFadeIn';
 
 export default {
   name: 'TodoApp',
   components: {
+    'page-fade-in': PageFadeIn,
     'nav-bar': Navbar,
-  },
-  data: () => {
-    return {
-      prevHeight: 0,
-    };
   },
   created() {
     this.$store.dispatch('auth/init', { root : true });
     this.$store.dispatch('lists/initLists', { root: true });
     this.$store.dispatch('todos/initTodos', 'uid', { root: true });
     this.$store.dispatch('categories/initCategories', { root: true });
-  },
-  methods: {
-    beforeLeave(element) {
-      this.prevHeight = getComputedStyle(element).height;
-    },
-    enter(element) {
-      const { height } = getComputedStyle(element);
-
-      element.style.height = this.prevHeight;
-
-      setTimeout(() => {
-        element.style.height = height;
-      });
-    },
-    afterEnter(element) {
-      element.style.height = 'auto';
-    },
   }
+  
 };
 </script>
 
@@ -101,38 +79,6 @@ input[type="text"]:focus{
 
 body { margin: 0;}
 
-.page-enter-active {
-  height: 100%;
-  animation: page-enter 0.4s;
-}
-.page-leave-active {
-  height: 100%;
-  animation: page-leave 0.4s;
-}
-
-
-@keyframes page-enter {
-  0% {
-    opacity: 0;
-    transform: translateY(10%);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0%);
-  }
-}
-
-@keyframes page-leave {
-  0% {
-    opacity: 1;
-    transform: translateY(0%);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(10%);
-  }
-}
-
 #app {
   font-family: 'Proxima Nova', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -150,6 +96,7 @@ body { margin: 0;}
 .main-wrapper {
   max-width: 950px;
   margin: 0 auto;
+  height: 100vh;
 }
 
 .desktop-only {

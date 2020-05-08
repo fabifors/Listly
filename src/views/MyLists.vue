@@ -109,6 +109,7 @@ import SortedList from '@/components/SortedList';
 import ListComponent from '@/components/Lists/List';
 import NewList from '../components/Lists/NewList';
 import CategoryFilter from '../components/Categories/CategoryFilter';
+import PageFadeIn from '../components/Transitions/PageFadeIn';
 
 export default {
   name: 'Lists',
