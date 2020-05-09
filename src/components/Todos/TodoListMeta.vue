@@ -81,7 +81,7 @@ export default {
       this.deleteModal = false;
     },
     removeList () {
-      this.$store.dispatch('lists/removeList', this.list.id, { root: true })
+      this.$store.dispatch('lists/removeList', { list_id: this.list.id }, { root: true })
         .then(res => {
           this.handleCloseModal();
         }).catch(error => console.error(error))

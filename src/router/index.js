@@ -6,7 +6,7 @@ import SettingsPage from '@/views/SettingsPage';
 import Login from '@/views/Login';
 import store from '@/store/index.js';
 
-import Firebase from '../firebase/index'; 
+import { Firebase } from '../firebase/index'; 
 
 import Testing from '@/views/Testing';
 

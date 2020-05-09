@@ -95,7 +95,7 @@ export default {
   },
   methods: {
     openList(id) {
-      this.$store.dispatch('lists/changeList', id, { root: true });
+      this.$store.dispatch('lists/changeList', { list_id: id }, { root: true });
       this.$router.replace('/');
     },
   }

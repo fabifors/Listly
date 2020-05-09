@@ -60,7 +60,7 @@ export default {
       { currentList: 'lists/getCurrentList' }
     ),
     getListTodos () {
-      return this.$store.getters['todos/getListTodosFromObj'](this.currentList.todos);
+      return this.currentList ? this.$store.getters['todos/getListTodosFromObj'](this.currentList.todos) : [];
     }
   }
 };

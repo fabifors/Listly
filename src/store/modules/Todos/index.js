@@ -1,7 +1,7 @@
 import hash from '@/utilities/hash';
 import INITIAL_STATE from '../../../INITIAL_STATE';
 import view from './test.vue';
-import * as Firebase from 'firebase';
+import { Firebase } from '../../../firebase';
 
 const state = {
   todos: {},
