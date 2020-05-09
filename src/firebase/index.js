@@ -1,28 +1,27 @@
 
 // Firebase imports
-import * as firebase from 'firebase/app';
+import * as firebase from 'firebase';
 import firebaseConfig from '../firebase.config';
+import _Database from './database';
 
 /**
  * Firebase Setup
  */
+firebase.initializeApp(firebaseConfig);
 
-class Firebase {
-  constructor(config) {
-    this.config = config;
-  }
-  
-  init() {
-    firebase.initializeApp(this.config);
+class _Firebase {
+  constructor(firebase) {
+    this.firebase = firebase;
   }
 
   logInWithGoogle () {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    return firebase.auth().signInWithPopup(provider).then((res) => {
-      const { user: { providerData: [usr] } } = res;
-      const { displayName, email, photoURL, uid } = usr;
+    const provider = new this.firebase.auth.GoogleAuthProvider();
+    return this.firebase.auth().signInWithPopup(provider).then((res) => {
+      console.log(res);
+      const { user: { providerData: [usr], uid }, additionalUserInfo: { isNewUser } } = res;
+      const { displayName, email, photoURL } = usr;
 
-      return { user: { displayName, email, photoURL, uid } };
+      return { user: { displayName, email, photoURL, uid }, isNewUser };
     }).catch(error => {
       console.error(error.code, error.message);
       return Error(error);
@@ -31,14 +30,14 @@ class Firebase {
 
   signOutUser () {
     return new Promise( async (resolve, reject) => {
-      const response = await firebase.auth().signOut();
+      const response = await this.firebase.auth().signOut();
       resolve(response);
     });
   }
 
   getCurrentAuthStatus () {
     return new Promise((resolve, reject) => {
-      const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+      const unsubscribe = this.firebase.auth().onAuthStateChanged(user => {
         unsubscribe();
         resolve(user);
       }, reject);
@@ -46,8 +45,7 @@ class Firebase {
   };
 }
 
-const _Firebase = new Firebase(firebaseConfig);
-_Firebase.init();
+const Database = new _Database(firebase);
+const Firebase = new _Firebase(firebase);
 
-
-export default _Firebase;
+export { Firebase, Database };

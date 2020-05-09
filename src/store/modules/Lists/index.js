@@ -1,5 +1,6 @@
 import hash from '@/utilities/hash';
 import INITIAL_STATE from '@/INITIAL_STATE';
+import { Database, Firebase } from '../../../firebase';
 
 const state = {
   currentList: '',
@@ -23,30 +24,34 @@ const mutations = {
     };
   },
 
-  REMOVE_LIST (state, list) {
+  REMOVE_LIST (state, payload) {
     const prevState = {
       ...state.lists
     };
-    delete prevState[list];
+    delete prevState[payload.list_id];
     state.lists = {
       ...prevState
     };
   },
 
-  CHANGE_ACTIVE_LIST (state, list_id) {
-    state.currentList = list_id;
+  CHANGE_ACTIVE_LIST (state, payload) {
+    state.currentList = payload.list_id;
   },
 
-  CHANGE_LIST_TITLE (state, { title, list_id }) {
-    state.lists[list_id].title = title;
+  CHANGE_LIST_TITLE (state, payload) {
+    state.lists[payload.list_id].title = payload.title;
   },
 
-  UPDATE_LIST_CATEGORY (state, { list_id, category_id }) {
-    state.lists[list_id].category = category_id;
+  UPDATE_LIST_CATEGORY (state, payload) {
+    state.lists[payload.list_id].category = payload.category_id;
   },
 
   REPLACE_LISTS (state, payload) {
-    state.lists = payload;
+    const lists = {};
+    for ( let key in payload ) {
+      lists[key] = { ...payload[key], id: key };
+    }
+    state.lists = lists;
   },
 
   UPDATE_TIMESTAMP (state, payload) {
@@ -81,70 +86,91 @@ const mutations = {
 };
 
 const actions = {
-  initLists ({ commit }) {
-    if (!localStorage.lists && !localStorage.currentList) {
-      commit('REPLACE_LISTS', INITIAL_STATE.lists);
-      return; 
-    }
-    const payload = {
-      lists: JSON.parse(localStorage.lists),
-      currentList: JSON.parse(localStorage.currentList)
-    };
-    commit('REPLACE_LISTS', payload.lists);
-    commit('CHANGE_ACTIVE_LIST', payload.currentList);
+  initLists ({ commit }, { uid, data }) {
+    return new Promise((resolve, reject) => {
+      if (typeof uid === 'undefined') {
+        reject({ status: 'error', messsage: 'Invalid UID param' });
+      }
+      
+      if (data === null) {
+        // Create initial state
+        const payload = { uid, data: INITIAL_STATE.lists };
+        Database.init('lists', payload);
+        commit('REPLACE_LISTS', payload.data);
+        resolve({ status: 'success', message: 'Created new state.' });
+      }
+      
+      const currentList = localStorage.getItem('currentList') || '';
+      commit('REPLACE_LISTS', data);
+      commit('CHANGE_ACTIVE_LIST', { list_id: currentList });
+      resolve({ status: 'success', message: 'Data fetch complete!' });
+    });
   },
 
-  storeLists ({ state }) {
-    localStorage.lists = JSON.stringify(state.lists);
+  setLists ({commit}, payload) {
+    commit('REPLACE_LISTS', payload);
+  },
+
+  storeCurrentList ({ state }) {
     localStorage.currentList = JSON.stringify(state.currentList);
   },
 
-  addList ({ commit, dispatch }, payload) {
+  addList ({ rootGetters }, payload) {
     return new Promise((resolve, reject)=> {
-      const list_id = hash();
-      commit('ADD_LIST', {
-        ...payload,
-        list_id
-      });
-      dispatch('storeLists');
-      resolve();
+      const uid = rootGetters['auth/getCurrentUser'].uid;
+      if (!uid || !payload) reject('No valid payload/uid');
+
+      const data = {...payload };
+      Database.create('lists', { uid, data });
+      resolve(data);
     });
   },
 
-  removeList ({ commit, dispatch }, list_id) {
+  removeList ({ rootGetters }, payload) {
     return new Promise((resolve, reject)=> {
-      commit('REMOVE_LIST', list_id);
+      const uid = rootGetters['auth/getCurrentUser'].uid;
+      if (!uid || !payload) reject('No valid payload/uid');
+
+      Database.deleteOne('lists', { uid, key: payload.list_id });
       commit('CHANGE_ACTIVE_LIST', '');
-      dispatch('storeLists');
       resolve();
     });
   },
 
-  changeList ({ dispatch, commit }, list_id) {
+  changeList ({ dispatch, commit }, payload) {
     return new Promise((resolve, reject) => {
-      commit('CHANGE_ACTIVE_LIST', list_id);
-      dispatch('storeLists');
+      commit('CHANGE_ACTIVE_LIST', payload);
+      dispatch('storeCurrentList');
       resolve();
     });
   },
 
-  updateListCategory ({ dispatch, commit }, payload) {
+  updateListCategory ({ commit }, payload) {
     return new Promise((resolve, reject) => {
+      const uid = rootGetters['auth/getCurrentUser'].uid;
+      if (!uid || !payload) reject('No valid payload/uid');
+      
+      const data = { uid, key: payload.list_id, data: payload.category_id };
+      Database.update('lists', data);
       commit('UPDATE_LIST_CATEGORY', payload);
-      dispatch('storeLists');
       resolve();
     });
   },
-
-  removeCategoryFromLists ({ dispatch, commit, state  }, payload) {
+  
+  removeCategoryFromLists ({ state }, payload) {
     return new Promise((resolve, reject) => {
+      const uid = rootGetters['auth/getCurrentUser'].uid;
+      const updates = {/* [key]: category: null */};
+
       for (let key in state.lists) {
         let list = state.lists[key];
         if (list.category === payload.category_id) {
-          commit('UPDATE_LIST_CATEGORY', { list_id: list.id, category_id: null});
+          updates[key] = { category: null };
         }
       }
-      dispatch('storeLists');
+      
+      Database.updateAll('lists', { uid, updates });
+      // dispatch('storeLists');
       resolve();
     });
   },
@@ -211,7 +237,7 @@ const getters = {
   },
 
   getCurrentList: state => {
-    if(!state.currentList) return false;
+    if(state.currentList === '') return {};
     return {
       id: state.currentList,
       ...state.lists[state.currentList]

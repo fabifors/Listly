@@ -92,6 +92,9 @@
         </transition-group>
       </sorted-list>
     </main>
+    <button @click="writeToDb()">
+      Test write Data
+    </button>
     <new-list />
   </section>
 </template>
@@ -110,6 +113,9 @@ import ListComponent from '@/components/Lists/List';
 import NewList from '../components/Lists/NewList';
 import CategoryFilter from '../components/Categories/CategoryFilter';
 import PageFadeIn from '../components/Transitions/PageFadeIn';
+
+// Firebase
+import { Database } from '../firebase';
 
 export default {
   name: 'Lists',
@@ -150,7 +156,7 @@ export default {
     },
     filterListOnSearch () {
       // Write search algoritm
-    }
+    },
   }
 };
 </script>

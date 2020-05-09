@@ -14,6 +14,7 @@
 <script>
 import Navbar from './components/Navbar';
 import PageFadeIn from './components/Transitions/PageFadeIn';
+import { Firebase, Database } from './firebase';
 
 export default {
   name: 'TodoApp',
@@ -22,12 +23,31 @@ export default {
     'nav-bar': Navbar,
   },
   created() {
-    this.$store.dispatch('auth/init', { root : true });
-    this.$store.dispatch('lists/initLists', { root: true });
-    this.$store.dispatch('todos/initTodos', 'uid', { root: true });
-    this.$store.dispatch('categories/initCategories', { root: true });
+    // this.$store.dispatch('auth/init', { root : true });
+    const listenForChanges = Database.listenForChanges();
+    Firebase.firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        console.log('user uid', user.uid);
+        this.$store.dispatch('auth/init', user);
+        listenForChanges.setUser(user.uid);
+        // Get the user data from firebase
+        listenForChanges.on('todos', (s) => console.log('todos',s.val()));
+        listenForChanges.on('lists', (s) => {
+          console.log('lists', s.val());
+          this.$store.dispatch('lists/initLists', { uid: user.uid, data: s.val() });
+          
+        });
+        listenForChanges.on('categories', (s) => console.log('categories', s.val()));
+      } else {
+        // Reset the state
+        listenForChanges.off();
+        listenForChanges.setUser(null);
+      }
+    });
+    // this.$store.dispatch('lists/initLists', { root: true });
+    // this.$store.dispatch('todos/initTodos', 'uid', { root: true });
+    // this.$store.dispatch('categories/initCategories', { root: true });
   }
-  
 };
 </script>
 

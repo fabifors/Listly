@@ -1,4 +1,4 @@
-import Firebase from '../../../firebase';
+import { Firebase, Database } from '../../../firebase';
 import InitialState from './initialState';
 import initialState from './initialState';
 const state = {
@@ -16,13 +16,12 @@ const mutations = {
 };
 
 const actions = {
-  init: function ({ commit }) {
+  init: function ({ commit }, authUser) {
     return new Promise(async (resolve, reject) => {
-      const authUser = await Firebase.getCurrentAuthStatus();
       if (authUser) {
         const { displayName, email, photoURL, uid } = authUser;
         const payload = { user: { displayName, email, photoURL, uid } };
-        commit('SET_USER', payload);
+        commit('SET_USER', payload.user);
       } else {
         commit('SET_USER', InitialState.user);
       }
@@ -30,9 +29,12 @@ const actions = {
     });
   },
 
-  loginUserWithGoogle: function ({ commit, dispatch }) {
+  loginUserWithGoogle: function ({ commit }) {
     return new Promise((resolve, reject) => {
       Firebase.logInWithGoogle().then(payload => {
+        if (payload.isNewUser) {
+          Database.createUser(payload.user);
+        }
         commit('SET_USER', payload.user);
         resolve(payload);
       }).catch(error => {
