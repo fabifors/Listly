@@ -1,10 +1,3 @@
-
-const methods = {
-  dude() {
-    console.log('will this work?');
-  }
-};
-
 class _Database {
   constructor(firebase) {
     this.db = firebase.database();
