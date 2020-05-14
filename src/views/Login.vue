@@ -2,7 +2,7 @@
   <div class="login-page">
     <h1>Welcome to listly</h1>
     <button
-      v-if="isAuth == null"
+      v-if="user == null"
       @click="loginUser()"
     >
       Login
@@ -11,7 +11,7 @@
       v-else
       @click="signOutUser()"
     >
-      Sign out
+      Sign out {{ user.email }}
     </button>
     <transition name="fade-in">
       <p v-if="message">
@@ -32,7 +32,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isAuth: 'auth/getCurrentUser'
+      user: 'auth/getCurrentUser'
     })
   },
   methods: {
@@ -56,8 +56,8 @@ export default {
           setTimeout(() => {
             this.message = null;
           }, 1000);
-        }).catch(err => {
-          console.error(err);
+        }).catch(error => {
+          console.error(error);
         });
     }
   }
@@ -73,6 +73,7 @@ export default {
   }
 }
 button {
+  background: var(--background-color-light);
   padding: 0.6rem 0.85rem;
   border: none;
   font-size: 0.95rem;

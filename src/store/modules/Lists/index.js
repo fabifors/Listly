@@ -1,6 +1,5 @@
-import hash from '@/utilities/hash';
 import INITIAL_STATE from '@/INITIAL_STATE';
-import { Database, Firebase } from '../../../firebase';
+import { Database } from '@/firebase';
 
 const state = {
   currentList: '',
@@ -9,7 +8,6 @@ const state = {
 
 const mutations = {
   ADD_LIST (state, payload) {
-    const timestamp = Date.now();
     const prevState = { ...state.lists };
     state.lists = {
       [payload.list_id]: {
@@ -117,10 +115,15 @@ const actions = {
 
   addList ({ rootGetters }, payload) {
     return new Promise((resolve, reject)=> {
+      const timestamp = Date.now();
       const uid = rootGetters['auth/getCurrentUser'].uid;
       if (!uid || !payload) reject('No valid payload/uid');
 
-      const data = {...payload };
+      const data = {
+        ...payload,
+        created: timestamp,
+        updated: timestamp
+      };
       Database.create('lists', { uid, data });
       resolve(data);
     });

@@ -17,7 +17,6 @@ class _Firebase {
   logInWithGoogle () {
     const provider = new this.firebase.auth.GoogleAuthProvider();
     return this.firebase.auth().signInWithPopup(provider).then((res) => {
-      console.log(res);
       const { user: { providerData: [usr], uid }, additionalUserInfo: { isNewUser } } = res;
       const { displayName, email, photoURL } = usr;
 

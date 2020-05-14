@@ -1,5 +1,4 @@
 import INITIAL_STATE from '@/INITIAL_STATE';
-import hash from '@/utilities/hash';
 
 const state = {
   categories: {},
