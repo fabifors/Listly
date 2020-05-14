@@ -66,6 +66,16 @@ class _Database {
     return Error('create: No valid ref/key passed');
   }
 
+  replace (ref, { uid, data}) {
+    const isValidRef = this.refs.some(r => r === ref);
+    if (isValidRef) {
+      const update = {};
+      update[`${ref}/${uid}`] = { ...data };
+      return this.db.ref().set(update);
+    }
+    return Error('update: No valid ref passed');
+  }
+
   update (ref, { uid, key, data}) {
     const isValidRef = this.refs.some(r => r === ref);
     const isValidKey = typeof key === 'string';

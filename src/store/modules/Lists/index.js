@@ -152,15 +152,18 @@ const actions = {
     return new Promise((resolve, reject) => {
       const uid = rootGetters['auth/getCurrentUser'].uid;
       if (!uid || !payload) reject('No valid payload/uid');
-      
       const data = { uid, key: payload.list_id, data: payload.category_id };
-      Database.update('lists', data);
-      commit('UPDATE_LIST_CATEGORY', payload);
-      resolve();
+      
+      try {
+        Database.update('lists', data);
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
     });
   },
   
-  removeCategoryFromLists ({ state }, payload) {
+  removeCategoryFromLists ({ state, rootGetters }, payload) {
     return new Promise((resolve, reject) => {
       const uid = rootGetters['auth/getCurrentUser'].uid;
       const updates = {/* [key]: category: null */};
@@ -171,40 +174,52 @@ const actions = {
           updates[key] = { category: null };
         }
       }
-      
-      Database.updateAll('lists', { uid, updates });
-      // dispatch('storeLists');
-      resolve();
+      try {
+        Database.updateAll('lists', { uid, updates });
+        resolve({ uid, updates });
+      } catch (error) {
+        reject(error);
+      }
     });
   },
 
-  changeListTitle ({ state, commit, dispatch }, title) {
+  changeListTitle ({ rootGetters }, payload) {
     return new Promise((resolve, reject)=> {
-      const list_id = state.currentList;
-      commit('CHANGE_LIST_TITLE', title);
-      dispatch('updateTimestamp', list_id);
-      dispatch('storeLists');
-      resolve();
+      const uid = rootGetters['auth/getCurrentUser'].uid;
+      const timestamp = new Date().getTime();
+      const data = { uid: uid, key: payload.list_id, data: { title: payload.title, updated: timestamp } };
+      try {
+        Database.update('lists', data);
+        resolve(payload);
+      } catch (error) {
+        reject(error);
+      }
     });
   },
 
-  updateTimestamp ({ commit, dispatch }, list_id) {
-    return new Promise((resolve, reject)=> {
-      const payload = {
-        timestamp: new Date().getTime(),
-        list_id
-      };
-      commit('UPDATE_TIMESTAMP', payload);
-      dispatch('storeLists');
-      resolve();
-    });
-  },
+  // updateTimestamp ({ commit, dispatch }, list_id) {
+  //   return new Promise((resolve, reject)=> {
+  //     const payload = {
+  //       timestamp: new Date().getTime(),
+  //       list_id
+  //     };
+  //     commit('UPDATE_TIMESTAMP', payload);
+  //     dispatch('storeLists');
+  //     resolve();
+  //   });
+  // },
 
-  reorderLists ({ commit, dispatch }, lists) {
+  reorderLists ({ rootGetters }, lists) {
     return new Promise((resolve, reject)=> {
-      commit('REPLACE_LISTS', lists);
-      dispatch('storeLists');
-      resolve();
+      const uid = rootGetters['auth/getCurrentUser'].uid;
+      if (!uid && !lists) reject('No valid UID or lists object');
+      const data = { uid, data: { lists } };
+      try {
+        Database.replace('lists', data);
+        resolve(data);
+      } catch (error) {
+        reject(error);
+      }
     });
   },
 
